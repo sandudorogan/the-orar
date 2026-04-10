@@ -1,5 +1,7 @@
 # Orar
 
+[![CI](https://github.com/sandudorogan/the-orar/actions/workflows/ci.yml/badge.svg)](https://github.com/sandudorogan/the-orar/actions/workflows/ci.yml)
+
 **School scheduling, solved.**
 
 Build conflict-free timetables for your school or university -- entirely in your browser. No servers, no accounts, no installers.
