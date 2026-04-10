@@ -13,6 +13,7 @@
     { "path": "../../packages/solver" },
     { "path": "../../packages/locales" },
     { "path": "../../packages/design-system" },
-    { "path": "../../packages/ui" }
+    { "path": "../../packages/ui" },
+    { "path": "../../packages/exports" }
   ]
 }

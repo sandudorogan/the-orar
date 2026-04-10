@@ -1,6 +1,7 @@
 import { getAllProjects, saveProject } from "@/shared/storage/project-store.ts"
 import type {
 	Activity,
+	Assignment,
 	AvailabilityRule,
 	Class,
 	ClassGroup,
@@ -32,6 +33,8 @@ import {
 interface ProjectContextValue {
 	project: ScheduleProject
 	isLoading: boolean
+	assignments: Assignment[]
+	setAssignments: (assignments: Assignment[]) => void
 
 	addClass: (
 		data: Pick<Class, "name" | "shortName"> & Partial<Pick<Class, "year" | "studentCount">>,
@@ -100,6 +103,7 @@ function createDefaultProject(): ScheduleProject {
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
 	const [project, setProject] = useState<ScheduleProject | null>(null)
+	const [assignments, setAssignments] = useState<Assignment[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -329,6 +333,8 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 			value={{
 				project,
 				isLoading,
+				assignments,
+				setAssignments,
 				addClass,
 				updateClass,
 				deleteClass,

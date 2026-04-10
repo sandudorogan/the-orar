@@ -12,6 +12,7 @@
     "@orar/solver": "workspace:*",
     "@orar/locales": "workspace:*",
     "@orar/design-system": "workspace:*",
+    "@orar/exports": "workspace:*",
     "@orar/ui": "workspace:*",
     "@tanstack/react-router": "^1.100.0",
     "react": "^19.0.0",

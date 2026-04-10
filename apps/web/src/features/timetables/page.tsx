@@ -34,19 +34,11 @@ type ViewMode = "class" | "teacher" | "classroom"
 
 export function TimetablesPage() {
 	const messages = useMessages()
-	const { project } = useProject()
+	const { project, assignments } = useProject()
 	const navigate = useNavigate()
 
 	const [viewMode, setViewMode] = useState<ViewMode>("class")
 	const [selectedId, setSelectedId] = useState<string>("")
-
-	const schedule = useMemo(() => {
-		return (project as Record<string, unknown>).scheduleResult as
-			| { assignments: Assignment[]; fitness: number }
-			| undefined
-	}, [project])
-
-	const assignments = schedule?.assignments ?? []
 
 	const conflictSlotKeys = useMemo(() => {
 		if (assignments.length === 0) return new Set<string>()

@@ -54,7 +54,7 @@ const initialState: GenerationState = {
 
 export function GeneratePage() {
 	const messages = useMessages()
-	const { project } = useProject()
+	const { project, setAssignments: setGlobalAssignments } = useProject()
 	const clientRef = useRef<GenerationClient | null>(null)
 
 	const [state, setState] = useState<GenerationState>(initialState)
@@ -89,6 +89,7 @@ export function GeneratePage() {
 						availabilityRules: project.availabilityRules,
 						assignments: response.assignments,
 					})
+					setGlobalAssignments(response.assignments)
 					setState((prev) => ({
 						...prev,
 						status: "completed",

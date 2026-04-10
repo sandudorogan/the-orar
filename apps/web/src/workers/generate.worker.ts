@@ -25,7 +25,12 @@ self.onmessage = (event: MessageEvent<SolverRequest>) => {
 			project.availabilityRules,
 		)
 
-		let bestResult = { assignments: [] as Assignment[], fitness: -1, placedCount: 0, totalCount: problem.activities.length }
+		let bestResult = {
+			assignments: [] as Assignment[],
+			fitness: -1,
+			placedCount: 0,
+			totalCount: problem.activities.length,
+		}
 
 		for (let attempt = 0; attempt < config.maxAttempts; attempt++) {
 			if (cancelled) {

@@ -18,7 +18,11 @@ export class GenerationClient {
 		})
 		this.worker.onmessage = (event: MessageEvent<SolverResponse>) => {
 			callback(event.data)
-			if (event.data.type === "complete" || event.data.type === "failed" || event.data.type === "cancelled") {
+			if (
+				event.data.type === "complete" ||
+				event.data.type === "failed" ||
+				event.data.type === "cancelled"
+			) {
 				this.cleanup()
 			}
 		}
