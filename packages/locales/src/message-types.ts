@@ -177,4 +177,55 @@ export interface MessageCatalog {
 		exportProject: string
 		general: string
 	}
+	landing: {
+		heroTitle: string
+		heroSubtitle: string
+		heroCta: string
+		heroSecondaryCta: string
+		featuresTitle: string
+		featuresSubtitle: string
+		featureClasses: string
+		featureClassesDesc: string
+		featureTeachers: string
+		featureTeachersDesc: string
+		featureClassrooms: string
+		featureClassroomsDesc: string
+		featureActivities: string
+		featureActivitiesDesc: string
+		featureConstraints: string
+		featureConstraintsDesc: string
+		featureGenerate: string
+		featureGenerateDesc: string
+		featureTimetables: string
+		featureTimetablesDesc: string
+		featureExports: string
+		featureExportsDesc: string
+		howItWorksTitle: string
+		howItWorksSubtitle: string
+		step1Title: string
+		step1Desc: string
+		step2Title: string
+		step2Desc: string
+		step3Title: string
+		step3Desc: string
+		step4Title: string
+		step4Desc: string
+		highlightsTitle: string
+		highlightOffline: string
+		highlightOfflineDesc: string
+		highlightLocalFirst: string
+		highlightLocalFirstDesc: string
+		highlightBilingual: string
+		highlightBilingualDesc: string
+		highlightBrowserOnly: string
+		highlightBrowserOnlyDesc: string
+		highlightBackup: string
+		highlightBackupDesc: string
+		highlightTransparent: string
+		highlightTransparentDesc: string
+		ctaTitle: string
+		ctaSubtitle: string
+		ctaButton: string
+		footerTagline: string
+	}
 }

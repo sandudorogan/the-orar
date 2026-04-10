@@ -179,6 +179,67 @@ const en: MessageCatalog = {
 		exportProject: "Export Project",
 		general: "General",
 	},
+	landing: {
+		heroTitle: "School scheduling, solved.",
+		heroSubtitle:
+			"Build conflict-free timetables for your school or university, entirely in your browser. No servers, no accounts, no hassle.",
+		heroCta: "Start scheduling",
+		heroSecondaryCta: "See how it works",
+		featuresTitle: "Everything you need to build the perfect schedule",
+		featuresSubtitle: "From defining your school's entities to exporting finished timetables.",
+		featureClasses: "Classes & Groups",
+		featureClassesDesc:
+			"Organize students into classes and subgroups with flexible year and capacity tracking.",
+		featureTeachers: "Teacher Management",
+		featureTeachersDesc:
+			"Add teachers, set maximum hours per day and week, and manage workload limits.",
+		featureClassrooms: "Classroom Allocation",
+		featureClassroomsDesc: "Define rooms with capacity, building, and tags for smart room matching.",
+		featureActivities: "Activities & Subjects",
+		featureActivitiesDesc:
+			"Configure subjects, assign teachers and groups, set durations and split patterns.",
+		featureConstraints: "Constraints & Availability",
+		featureConstraintsDesc:
+			"Set unavailable times, preferred slots, and custom rules for teachers, classes, and rooms.",
+		featureGenerate: "Algorithmic Generation",
+		featureGenerateDesc:
+			"Generate optimized schedules using in-browser Web Workers. No server required.",
+		featureTimetables: "Timetable Views",
+		featureTimetablesDesc:
+			"View schedules by class, teacher, or classroom with conflict highlighting.",
+		featureExports: "Export & Share",
+		featureExportsDesc:
+			"Export timetables as DOCX or Excel files, per teacher, class, or institution.",
+		howItWorksTitle: "How it works",
+		howItWorksSubtitle: "Four simple steps to a conflict-free timetable.",
+		step1Title: "Define your entities",
+		step1Desc: "Add classes, teachers, and classrooms with their details and constraints.",
+		step2Title: "Create activities",
+		step2Desc: "Set up subjects, assign teachers and groups, configure hours and preferences.",
+		step3Title: "Generate the schedule",
+		step3Desc: "Hit generate and let the algorithm find the best timetable in seconds.",
+		step4Title: "Review and export",
+		step4Desc: "Inspect conflicts, fine-tune placements, and export to DOCX or Excel.",
+		highlightsTitle: "Built different",
+		highlightOffline: "Fully Offline",
+		highlightOfflineDesc: "Works without internet. Install as a PWA and schedule anywhere.",
+		highlightLocalFirst: "Local-First",
+		highlightLocalFirstDesc: "Your data stays on your device, stored in IndexedDB. No cloud, no risk.",
+		highlightBilingual: "Bilingual",
+		highlightBilingualDesc: "Full English and Romanian support with instant language switching.",
+		highlightBrowserOnly: "Browser-Only",
+		highlightBrowserOnlyDesc:
+			"No servers, no backend. Everything runs in your browser using Web Workers.",
+		highlightBackup: "Backup & Restore",
+		highlightBackupDesc: "Export your entire project as JSON and restore it anytime.",
+		highlightTransparent: "Transparent",
+		highlightTransparentDesc:
+			"Clear conflict reporting and fitness scoring so you understand every placement.",
+		ctaTitle: "Ready to build your schedule?",
+		ctaSubtitle: "Start creating your timetable right now. No signup needed.",
+		ctaButton: "Go to dashboard",
+		footerTagline: "Scheduling made simple.",
+	},
 }
 
 export default en

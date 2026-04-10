@@ -1,4 +1,10 @@
 @import "@orar/design-system/styles/theme.css";
+@source "../../../../packages/ui/src";
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
 
 body {
   font-family:

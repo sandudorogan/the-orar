@@ -29,7 +29,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-	{ path: "/", labelKey: "dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
+	{ path: "/dashboard", labelKey: "dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
 	{ path: "/classes", labelKey: "classes", icon: <GraduationCap className="h-5 w-5" /> },
 	{ path: "/teachers", labelKey: "teachers", icon: <Users className="h-5 w-5" /> },
 	{ path: "/classrooms", labelKey: "classrooms", icon: <DoorOpen className="h-5 w-5" /> },
@@ -72,9 +72,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
 				<ScrollArea className="flex-1">
 					<nav className="flex flex-col gap-1 p-2">
 						{navItems.map((item) => {
-							const isActive =
-								matchRoute({ to: item.path, fuzzy: item.path !== "/" }) ||
-								(item.path === "/" && matchRoute({ to: "/" }))
+							const isActive = matchRoute({ to: item.path, fuzzy: item.path !== "/dashboard" })
 
 							return (
 								<Link
