@@ -1,0 +1,12 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/domain" },
+    { "path": "packages/solver" },
+    { "path": "packages/exports" },
+    { "path": "packages/locales" },
+    { "path": "packages/design-system" },
+    { "path": "packages/ui" },
+    { "path": "apps/web" }
+  ]
+}
