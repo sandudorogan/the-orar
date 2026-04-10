@@ -16,9 +16,7 @@ export function createClassAvailability(): Constraint {
 
 				const targetIds =
 					rule.targetType === "class"
-						? context.classGroups
-								.filter((g) => g.classId === rule.targetId)
-								.map((g) => g.id)
+						? context.classGroups.filter((g) => g.classId === rule.targetId).map((g) => g.id)
 						: [rule.targetId]
 
 				for (const targetId of targetIds) {

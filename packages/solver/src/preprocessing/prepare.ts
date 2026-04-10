@@ -25,7 +25,7 @@ export interface PreparedActivity {
 export function prepareProblem(
 	calendar: Calendar,
 	activities: Activity[],
-	teachers: Teacher[],
+	_teachers: Teacher[],
 	classGroups: ClassGroup[],
 	classrooms: Classroom[],
 	availabilityRules: AvailabilityRule[],

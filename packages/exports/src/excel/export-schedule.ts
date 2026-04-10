@@ -51,9 +51,9 @@ export async function exportScheduleToExcel(model: ExportScheduleModel): Promise
 		dataRow.height = 40
 	}
 
-	sheet.columns.forEach((col) => {
+	for (const col of sheet.columns) {
 		col.width = 18
-	})
+	}
 
 	const buffer = await workbook.xlsx.writeBuffer()
 	return new Blob([buffer], {

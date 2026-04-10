@@ -1,12 +1,6 @@
 import { z } from "zod"
 
-export const GenerationStatus = z.enum([
-	"pending",
-	"running",
-	"completed",
-	"failed",
-	"cancelled",
-])
+export const GenerationStatus = z.enum(["pending", "running", "completed", "failed", "cancelled"])
 export type GenerationStatus = z.infer<typeof GenerationStatus>
 
 export const GenerationRunSchema = z.object({

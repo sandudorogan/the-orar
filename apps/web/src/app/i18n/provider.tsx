@@ -1,5 +1,5 @@
-import { type Locale, type MessageCatalog, defaultLocale, isValidLocale } from "@orar/locales"
 import { getSettings, saveSettings } from "@/shared/storage/settings-store.ts"
+import { type Locale, type MessageCatalog, defaultLocale, isValidLocale } from "@orar/locales"
 import { type ReactNode, createContext, useCallback, useEffect, useState } from "react"
 import { loadCatalog } from "./load-locale.ts"
 
@@ -31,9 +31,14 @@ export function I18nProvider({ initialLocale, initialMessages, children }: I18nP
 
 	useEffect(() => {
 		getSettings().then((s) => {
-			if (isValidLocale(s.locale) && s.locale !== locale) {
-				setIsLoading(true)
-				setLocaleState(s.locale)
+			if (isValidLocale(s.locale)) {
+				setLocaleState((prev) => {
+					if (prev !== s.locale) {
+						setIsLoading(true)
+						return s.locale
+					}
+					return prev
+				})
 			}
 		})
 	}, [])

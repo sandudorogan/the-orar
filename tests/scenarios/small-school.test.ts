@@ -1,4 +1,5 @@
 import {
+	type ScheduleContext,
 	createActivity,
 	createCalendar,
 	createClass,
@@ -8,7 +9,6 @@ import {
 	createInstitution,
 	createScheduleProject,
 	createTeacher,
-	type ScheduleContext,
 } from "@orar/domain"
 import { generate, prepareProblem } from "@orar/solver"
 import { describe, expect, it } from "vitest"

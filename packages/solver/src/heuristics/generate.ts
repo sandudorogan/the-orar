@@ -1,5 +1,5 @@
 import type { Assignment, TimeSlot } from "@orar/domain"
-import { timeSlotKey, timeSlotKeysForSpan } from "@orar/domain"
+import { timeSlotKeysForSpan } from "@orar/domain"
 import type { PreparedActivity, PreparedProblem } from "../preprocessing/prepare.ts"
 
 export interface GenerationResult {
@@ -96,11 +96,7 @@ function pickBestSlot(
 		let score = 0
 		const spanKeys = timeSlotKeysForSpan(slot, prepared.duration)
 
-		if (
-			prepared.compatibleRooms.some(
-				(r) => !spanKeys.some((k) => roomUsed.get(r.id)?.has(k)),
-			)
-		) {
+		if (prepared.compatibleRooms.some((r) => !spanKeys.some((k) => roomUsed.get(r.id)?.has(k)))) {
 			score += 10
 		}
 

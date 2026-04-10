@@ -1,5 +1,5 @@
-import type { MessageCatalog } from "../message-types.ts"
 import type { Locale } from "../language-registry.ts"
+import type { MessageCatalog } from "../message-types.ts"
 import en from "./en.ts"
 import ro from "./ro.ts"
 

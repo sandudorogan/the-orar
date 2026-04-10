@@ -1,12 +1,4 @@
-import type {
-	Activity,
-	Assignment,
-	Calendar,
-	ClassGroup,
-	Classroom,
-	Teacher,
-	TimeSlot,
-} from "@orar/domain"
+import type { Activity, Assignment, Calendar, ClassGroup, Classroom, Teacher } from "@orar/domain"
 import { type Locale, getCatalog, translateDayName } from "@orar/locales"
 
 export interface ExportTimetableRow {
@@ -146,15 +138,19 @@ function buildExportModel(
 					period,
 					activityName: activity?.name ?? "",
 					subjectName: activity?.subjectName ?? "",
-					teacherNames: teachers.length > 0
-						? (activity?.teacherIds.map((id) => teachers.find((t) => t.id === id)?.shortName ?? id) ?? [])
-						: [],
-					classGroupNames: classGroups.length > 0
-						? (activity?.classGroupIds.map((id) => classGroups.find((g) => g.id === id)?.shortName ?? id) ?? [])
-						: [],
-					roomName: a.roomId
-						? classrooms.find((r) => r.id === a.roomId)?.shortName
-						: undefined,
+					teacherNames:
+						teachers.length > 0
+							? (activity?.teacherIds.map(
+									(id) => teachers.find((t) => t.id === id)?.shortName ?? id,
+								) ?? [])
+							: [],
+					classGroupNames:
+						classGroups.length > 0
+							? (activity?.classGroupIds.map(
+									(id) => classGroups.find((g) => g.id === id)?.shortName ?? id,
+								) ?? [])
+							: [],
+					roomName: a.roomId ? classrooms.find((r) => r.id === a.roomId)?.shortName : undefined,
 				})
 			} else {
 				cells.push({

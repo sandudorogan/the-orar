@@ -194,7 +194,8 @@ const en: MessageCatalog = {
 		featureTeachersDesc:
 			"Add teachers, set maximum hours per day and week, and manage workload limits.",
 		featureClassrooms: "Classroom Allocation",
-		featureClassroomsDesc: "Define rooms with capacity, building, and tags for smart room matching.",
+		featureClassroomsDesc:
+			"Define rooms with capacity, building, and tags for smart room matching.",
 		featureActivities: "Activities & Subjects",
 		featureActivitiesDesc:
 			"Configure subjects, assign teachers and groups, set durations and split patterns.",
@@ -224,7 +225,8 @@ const en: MessageCatalog = {
 		highlightOffline: "Fully Offline",
 		highlightOfflineDesc: "Works without internet. Install as a PWA and schedule anywhere.",
 		highlightLocalFirst: "Local-First",
-		highlightLocalFirstDesc: "Your data stays on your device, stored in IndexedDB. No cloud, no risk.",
+		highlightLocalFirstDesc:
+			"Your data stays on your device, stored in IndexedDB. No cloud, no risk.",
 		highlightBilingual: "Bilingual",
 		highlightBilingualDesc: "Full English and Romanian support with instant language switching.",
 		highlightBrowserOnly: "Browser-Only",

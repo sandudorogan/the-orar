@@ -84,8 +84,7 @@ export function validateProject(project: ScheduleProject): ValidationIssue[] {
 		}
 	}
 
-	const totalSlots =
-		project.calendar.activeDays.length * project.calendar.periodsPerDay
+	const totalSlots = project.calendar.activeDays.length * project.calendar.periodsPerDay
 	let totalRequired = 0
 	for (const activity of project.activities) {
 		totalRequired += activity.totalPerWeek * activity.duration

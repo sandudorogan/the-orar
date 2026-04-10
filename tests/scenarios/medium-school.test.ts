@@ -1,4 +1,5 @@
 import {
+	type ScheduleContext,
 	createActivity,
 	createAvailabilityRule,
 	createCalendar,
@@ -10,7 +11,6 @@ import {
 	createScheduleProject,
 	createTeacher,
 	createTimeSlot,
-	type ScheduleContext,
 } from "@orar/domain"
 import { generate, prepareProblem } from "@orar/solver"
 import { describe, expect, it } from "vitest"
@@ -48,14 +48,62 @@ describe("Scenario: Medium school (8 teachers, 4 classes, 6 rooms, availability 
 		// Each class gets 4h math, 3h english, 3h science, 2h each for others = 22h total
 		for (const group of groups) {
 			project.activities.push(
-				createActivity({ name: `Math ${group.shortName}`, subjectName: "Math", teacherIds: [teachers[0]!.id], classGroupIds: [group.id], totalPerWeek: 4 }),
-				createActivity({ name: `English ${group.shortName}`, subjectName: "English", teacherIds: [teachers[1]!.id], classGroupIds: [group.id], totalPerWeek: 3 }),
-				createActivity({ name: `Science ${group.shortName}`, subjectName: "Science", teacherIds: [teachers[2]!.id], classGroupIds: [group.id], totalPerWeek: 3 }),
-				createActivity({ name: `History ${group.shortName}`, subjectName: "History", teacherIds: [teachers[3]!.id], classGroupIds: [group.id], totalPerWeek: 2 }),
-				createActivity({ name: `Geography ${group.shortName}`, subjectName: "Geography", teacherIds: [teachers[4]!.id], classGroupIds: [group.id], totalPerWeek: 2 }),
-				createActivity({ name: `PE ${group.shortName}`, subjectName: "PE", teacherIds: [teachers[5]!.id], classGroupIds: [group.id], totalPerWeek: 2 }),
-				createActivity({ name: `Art ${group.shortName}`, subjectName: "Art", teacherIds: [teachers[6]!.id], classGroupIds: [group.id], totalPerWeek: 1 }),
-				createActivity({ name: `Music ${group.shortName}`, subjectName: "Music", teacherIds: [teachers[7]!.id], classGroupIds: [group.id], totalPerWeek: 1 }),
+				createActivity({
+					name: `Math ${group.shortName}`,
+					subjectName: "Math",
+					teacherIds: [teachers[0]!.id],
+					classGroupIds: [group.id],
+					totalPerWeek: 4,
+				}),
+				createActivity({
+					name: `English ${group.shortName}`,
+					subjectName: "English",
+					teacherIds: [teachers[1]!.id],
+					classGroupIds: [group.id],
+					totalPerWeek: 3,
+				}),
+				createActivity({
+					name: `Science ${group.shortName}`,
+					subjectName: "Science",
+					teacherIds: [teachers[2]!.id],
+					classGroupIds: [group.id],
+					totalPerWeek: 3,
+				}),
+				createActivity({
+					name: `History ${group.shortName}`,
+					subjectName: "History",
+					teacherIds: [teachers[3]!.id],
+					classGroupIds: [group.id],
+					totalPerWeek: 2,
+				}),
+				createActivity({
+					name: `Geography ${group.shortName}`,
+					subjectName: "Geography",
+					teacherIds: [teachers[4]!.id],
+					classGroupIds: [group.id],
+					totalPerWeek: 2,
+				}),
+				createActivity({
+					name: `PE ${group.shortName}`,
+					subjectName: "PE",
+					teacherIds: [teachers[5]!.id],
+					classGroupIds: [group.id],
+					totalPerWeek: 2,
+				}),
+				createActivity({
+					name: `Art ${group.shortName}`,
+					subjectName: "Art",
+					teacherIds: [teachers[6]!.id],
+					classGroupIds: [group.id],
+					totalPerWeek: 1,
+				}),
+				createActivity({
+					name: `Music ${group.shortName}`,
+					subjectName: "Music",
+					teacherIds: [teachers[7]!.id],
+					classGroupIds: [group.id],
+					totalPerWeek: 1,
+				}),
 			)
 		}
 

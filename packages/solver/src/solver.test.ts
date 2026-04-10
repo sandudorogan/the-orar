@@ -1,5 +1,6 @@
 import {
 	createActivity,
+	createAvailabilityRule,
 	createCalendar,
 	createClass,
 	createClassGroup,
@@ -8,7 +9,6 @@ import {
 	createScheduleProject,
 	createTeacher,
 	createTimeSlot,
-	createAvailabilityRule,
 } from "@orar/domain"
 import { describe, expect, it } from "vitest"
 import { generate } from "./heuristics/generate.ts"
@@ -42,12 +42,48 @@ function buildSmallSchool() {
 	project.classrooms.push(r1, r2)
 
 	project.activities.push(
-		createActivity({ name: "Math 9A", subjectName: "Math", teacherIds: [t1.id], classGroupIds: [g1.id], totalPerWeek: 4 }),
-		createActivity({ name: "Math 9B", subjectName: "Math", teacherIds: [t1.id], classGroupIds: [g2.id], totalPerWeek: 4 }),
-		createActivity({ name: "Physics 9A", subjectName: "Physics", teacherIds: [t2.id], classGroupIds: [g1.id], totalPerWeek: 3 }),
-		createActivity({ name: "Physics 9B", subjectName: "Physics", teacherIds: [t2.id], classGroupIds: [g2.id], totalPerWeek: 3 }),
-		createActivity({ name: "English 9A", subjectName: "English", teacherIds: [t3.id], classGroupIds: [g1.id], totalPerWeek: 3 }),
-		createActivity({ name: "English 9B", subjectName: "English", teacherIds: [t3.id], classGroupIds: [g2.id], totalPerWeek: 3 }),
+		createActivity({
+			name: "Math 9A",
+			subjectName: "Math",
+			teacherIds: [t1.id],
+			classGroupIds: [g1.id],
+			totalPerWeek: 4,
+		}),
+		createActivity({
+			name: "Math 9B",
+			subjectName: "Math",
+			teacherIds: [t1.id],
+			classGroupIds: [g2.id],
+			totalPerWeek: 4,
+		}),
+		createActivity({
+			name: "Physics 9A",
+			subjectName: "Physics",
+			teacherIds: [t2.id],
+			classGroupIds: [g1.id],
+			totalPerWeek: 3,
+		}),
+		createActivity({
+			name: "Physics 9B",
+			subjectName: "Physics",
+			teacherIds: [t2.id],
+			classGroupIds: [g2.id],
+			totalPerWeek: 3,
+		}),
+		createActivity({
+			name: "English 9A",
+			subjectName: "English",
+			teacherIds: [t3.id],
+			classGroupIds: [g1.id],
+			totalPerWeek: 3,
+		}),
+		createActivity({
+			name: "English 9B",
+			subjectName: "English",
+			teacherIds: [t3.id],
+			classGroupIds: [g2.id],
+			totalPerWeek: 3,
+		}),
 	)
 
 	return project
@@ -94,8 +130,8 @@ describe("Preprocessing", () => {
 			project.availabilityRules,
 		)
 
-		const mathTeacherActivities = problem.activities.filter(
-			(a) => a.activity.teacherIds.includes(project.teachers[0]!.id),
+		const mathTeacherActivities = problem.activities.filter((a) =>
+			a.activity.teacherIds.includes(project.teachers[0]!.id),
 		)
 
 		for (const a of mathTeacherActivities) {
@@ -125,9 +161,7 @@ describe("Preprocessing", () => {
 			project.availabilityRules,
 		)
 
-		const peActivities = problem.activities.filter(
-			(a) => a.activity.subjectName === "PE",
-		)
+		const peActivities = problem.activities.filter((a) => a.activity.subjectName === "PE")
 		expect(peActivities).toHaveLength(2)
 		expect(peActivities.map((a) => a.duration).sort()).toEqual([1, 2])
 	})
@@ -179,14 +213,10 @@ describe("Generation", () => {
 		)
 
 		let calls = 0
-		const result = generate(
-			problem,
-			undefined,
-			() => {
-				calls++
-				return calls > 5
-			},
-		)
+		const result = generate(problem, undefined, () => {
+			calls++
+			return calls > 5
+		})
 		expect(result.placedCount).toBeLessThan(result.totalCount)
 	})
 })

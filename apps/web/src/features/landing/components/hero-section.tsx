@@ -60,9 +60,7 @@ export function HeroSection() {
 										<div
 											key={cellKey}
 											className={`border border-grid-cell-border ${
-												FILLED_CELLS.has(cellKey)
-													? "bg-landing-cell-fill"
-													: "bg-surface-card"
+												FILLED_CELLS.has(cellKey) ? "bg-landing-cell-fill" : "bg-surface-card"
 											}`}
 										/>
 									)

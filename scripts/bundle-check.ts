@@ -25,7 +25,9 @@ for (const dir of SCAN_DIRS) {
 			]
 			for (const pattern of patterns) {
 				if (pattern.test(content)) {
-					violations.push(`${fullPath}: imports "${lib}" (must only be in ${ALLOWED_DIRS.join(", ")})`)
+					violations.push(
+						`${fullPath}: imports "${lib}" (must only be in ${ALLOWED_DIRS.join(", ")})`,
+					)
 				}
 			}
 		}

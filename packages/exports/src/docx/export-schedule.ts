@@ -14,10 +14,7 @@ import {
 import type { ExportScheduleModel } from "../mappers/schedule-to-export-model.ts"
 
 export async function exportScheduleToDocx(model: ExportScheduleModel): Promise<Blob> {
-	const headerCells = [
-		createHeaderCell(""),
-		...model.days.map((day) => createHeaderCell(day)),
-	]
+	const headerCells = [createHeaderCell(""), ...model.days.map((day) => createHeaderCell(day))]
 
 	const dataRows = model.rows.map((row) => {
 		const periodCell = createHeaderCell(`${row.period + 1}`)

@@ -3,8 +3,8 @@ import { createActivity } from "../entities/activity.ts"
 import { createAssignment } from "../entities/assignment.ts"
 import { createAvailabilityRule } from "../entities/availability-rule.ts"
 import { createCalendar } from "../entities/calendar.ts"
-import { createClass } from "../entities/class.ts"
 import { createClassGroup } from "../entities/class-group.ts"
+import { createClass } from "../entities/class.ts"
 import { createClassroom } from "../entities/classroom.ts"
 import { createTeacher } from "../entities/teacher.ts"
 import { createTimeSlot } from "../entities/time-slot.ts"
@@ -63,9 +63,7 @@ describe("No-overlap constraints", () => {
 
 		const registry = createDefaultRegistry()
 		const violations = registry.evaluateHard(context)
-		const teacherViolations = violations.filter(
-			(v) => v.constraintType === "no-teacher-overlap",
-		)
+		const teacherViolations = violations.filter((v) => v.constraintType === "no-teacher-overlap")
 		expect(teacherViolations.length).toBeGreaterThan(0)
 	})
 
@@ -102,9 +100,7 @@ describe("No-overlap constraints", () => {
 
 		const registry = createDefaultRegistry()
 		const violations = registry.evaluateHard(context)
-		const teacherViolations = violations.filter(
-			(v) => v.constraintType === "no-teacher-overlap",
-		)
+		const teacherViolations = violations.filter((v) => v.constraintType === "no-teacher-overlap")
 		expect(teacherViolations).toHaveLength(0)
 	})
 
@@ -143,9 +139,7 @@ describe("No-overlap constraints", () => {
 
 		const registry = createDefaultRegistry()
 		const violations = registry.evaluateHard(context)
-		const roomViolations = violations.filter(
-			(v) => v.constraintType === "no-room-overlap",
-		)
+		const roomViolations = violations.filter((v) => v.constraintType === "no-room-overlap")
 		expect(roomViolations.length).toBeGreaterThan(0)
 	})
 
@@ -181,9 +175,7 @@ describe("No-overlap constraints", () => {
 
 		const registry = createDefaultRegistry()
 		const violations = registry.evaluateHard(context)
-		const classViolations = violations.filter(
-			(v) => v.constraintType === "no-class-overlap",
-		)
+		const classViolations = violations.filter((v) => v.constraintType === "no-class-overlap")
 		expect(classViolations.length).toBeGreaterThan(0)
 	})
 })
@@ -214,9 +206,7 @@ describe("Availability constraints", () => {
 			classGroups: [group],
 			activities: [activity],
 			availabilityRules: [rule],
-			assignments: [
-				createAssignment({ activityId: activity.id, timeSlot: blockedSlot }),
-			],
+			assignments: [createAssignment({ activityId: activity.id, timeSlot: blockedSlot })],
 		})
 
 		const registry = createDefaultRegistry()

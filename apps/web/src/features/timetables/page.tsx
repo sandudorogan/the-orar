@@ -1,6 +1,5 @@
 import { useMessages } from "@/app/i18n/use-i18n.ts"
 import { useProject } from "@/app/project-context.tsx"
-import type { Assignment } from "@orar/domain"
 import {
 	detectConflicts,
 	getAssignmentsForClassGroup,
@@ -67,7 +66,6 @@ export function TimetablesPage() {
 	const periods = project.calendar.periodsPerDay
 
 	const dayLabels = days.map((d) => d.charAt(0).toUpperCase() + d.slice(1))
-	const dayToLabel = Object.fromEntries(days.map((d, i) => [d, dayLabels[i]!]))
 
 	const entityOptions = useMemo(() => {
 		switch (viewMode) {
@@ -106,6 +104,9 @@ export function TimetablesPage() {
 	}, [viewMode, selectedId, assignments, project.activities])
 
 	const gridCells = useMemo(() => {
+		const memoDays = project.calendar.activeDays
+		const memoDayLabels = memoDays.map((d) => d.charAt(0).toUpperCase() + d.slice(1))
+		const dayToLabel = Object.fromEntries(memoDays.map((d, i) => [d, memoDayLabels[i]!]))
 		const cells = new Map<string, TimetableCell[]>()
 
 		for (const assignment of filteredAssignments) {

@@ -116,7 +116,7 @@ export function GeneratePage() {
 					break
 			}
 		},
-		[project],
+		[project, setGlobalAssignments],
 	)
 
 	function handleStart() {

@@ -1,6 +1,17 @@
 import { useLocale, useMessages } from "@/app/i18n/use-i18n.ts"
 import { useProject } from "@/app/project-context.tsx"
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Tabs, TabsContent, TabsList, TabsTrigger } from "@orar/ui"
+import {
+	Button,
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger,
+} from "@orar/ui"
 import { FileDown, FileSpreadsheet, FileText, Loader2, Package } from "lucide-react"
 import { useCallback, useState } from "react"
 
@@ -85,7 +96,7 @@ export function ExportsPage() {
 				setExporting(false)
 			}
 		},
-		[assignments, project],
+		[assignments, project, locale],
 	)
 
 	const handleInstitutionPack = useCallback(
@@ -99,13 +110,37 @@ export function ExportsPage() {
 
 				const allModels = [
 					...project.teachers.map((t) =>
-						buildTeacherExportModel(t, project.calendar, assignments, project.activities, project.classGroups, project.classrooms, locale),
+						buildTeacherExportModel(
+							t,
+							project.calendar,
+							assignments,
+							project.activities,
+							project.classGroups,
+							project.classrooms,
+							locale,
+						),
 					),
 					...project.classGroups.map((g) =>
-						buildClassGroupExportModel(g, project.calendar, assignments, project.activities, project.teachers, project.classrooms, locale),
+						buildClassGroupExportModel(
+							g,
+							project.calendar,
+							assignments,
+							project.activities,
+							project.teachers,
+							project.classrooms,
+							locale,
+						),
 					),
 					...project.classrooms.map((r) =>
-						buildClassroomExportModel(r, project.calendar, assignments, project.activities, project.teachers, project.classGroups, locale),
+						buildClassroomExportModel(
+							r,
+							project.calendar,
+							assignments,
+							project.activities,
+							project.teachers,
+							project.classGroups,
+							locale,
+						),
 					),
 				]
 
@@ -127,7 +162,7 @@ export function ExportsPage() {
 				setExporting(false)
 			}
 		},
-		[assignments, project],
+		[assignments, project, locale],
 	)
 
 	const hasSchedule = assignments.length > 0
@@ -198,11 +233,12 @@ export function ExportsPage() {
 								</CardDescription>
 							</CardHeader>
 							<CardContent className="flex gap-3">
-								<Button
-									onClick={() => handleInstitutionPack("docx")}
-									disabled={exporting}
-								>
-									{exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
+								<Button onClick={() => handleInstitutionPack("docx")} disabled={exporting}>
+									{exporting ? (
+										<Loader2 className="h-4 w-4 animate-spin" />
+									) : (
+										<FileText className="h-4 w-4" />
+									)}
 									{messages.exports.exportDocx}
 								</Button>
 								<Button
@@ -210,7 +246,11 @@ export function ExportsPage() {
 									onClick={() => handleInstitutionPack("excel")}
 									disabled={exporting}
 								>
-									{exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileSpreadsheet className="h-4 w-4" />}
+									{exporting ? (
+										<Loader2 className="h-4 w-4 animate-spin" />
+									) : (
+										<FileSpreadsheet className="h-4 w-4" />
+									)}
 									{messages.exports.exportExcel}
 								</Button>
 							</CardContent>
@@ -243,11 +283,19 @@ function ExportCard({ title, description, exporting, onDocx, onExcel, messages }
 			</CardHeader>
 			<CardContent className="flex gap-3">
 				<Button onClick={onDocx} disabled={exporting}>
-					{exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
+					{exporting ? (
+						<Loader2 className="h-4 w-4 animate-spin" />
+					) : (
+						<FileText className="h-4 w-4" />
+					)}
 					{messages.exports.exportDocx}
 				</Button>
 				<Button variant="outline" onClick={onExcel} disabled={exporting}>
-					{exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileSpreadsheet className="h-4 w-4" />}
+					{exporting ? (
+						<Loader2 className="h-4 w-4 animate-spin" />
+					) : (
+						<FileSpreadsheet className="h-4 w-4" />
+					)}
 					{messages.exports.exportExcel}
 				</Button>
 			</CardContent>

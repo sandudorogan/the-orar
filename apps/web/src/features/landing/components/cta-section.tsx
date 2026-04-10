@@ -9,9 +9,7 @@ export function CtaSection() {
 		<section className="bg-landing-cta-bg py-20">
 			<div className="max-w-3xl mx-auto px-4 text-center">
 				<h2 className="text-3xl sm:text-4xl font-bold text-white">{messages.landing.ctaTitle}</h2>
-				<p className="text-lg text-landing-cta-text mt-4">
-					{messages.landing.ctaSubtitle}
-				</p>
+				<p className="text-lg text-landing-cta-text mt-4">{messages.landing.ctaSubtitle}</p>
 				<div className="mt-8">
 					<Button
 						asChild

@@ -23,7 +23,10 @@ export type Activity = z.infer<typeof ActivitySchema>
 export function createActivity(
 	data: Pick<Activity, "name" | "subjectName" | "teacherIds" | "classGroupIds"> &
 		Partial<
-			Pick<Activity, "id" | "duration" | "totalPerWeek" | "splitConfig" | "preferredRoomIds" | "roomTags">
+			Pick<
+				Activity,
+				"id" | "duration" | "totalPerWeek" | "splitConfig" | "preferredRoomIds" | "roomTags"
+			>
 		>,
 ): Activity {
 	return ActivitySchema.parse({

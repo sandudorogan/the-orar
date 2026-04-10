@@ -223,8 +223,7 @@ const ro: MessageCatalog = {
 		step4Desc: "Inspectezi conflictele, ajustezi plasările și exporti în DOCX sau Excel.",
 		highlightsTitle: "Construit diferit",
 		highlightOffline: "Complet Offline",
-		highlightOfflineDesc:
-			"Funcționează fără internet. Instalează ca PWA și planifică de oriunde.",
+		highlightOfflineDesc: "Funcționează fără internet. Instalează ca PWA și planifică de oriunde.",
 		highlightLocalFirst: "Local-First",
 		highlightLocalFirstDesc:
 			"Datele tale rămân pe dispozitivul tău, stocate în IndexedDB. Fără cloud, fără riscuri.",

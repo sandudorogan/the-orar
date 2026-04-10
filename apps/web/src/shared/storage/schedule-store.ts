@@ -7,10 +7,7 @@ interface ScheduleRecord {
 	assignments: Assignment[]
 }
 
-export async function saveAssignments(
-	projectId: string,
-	assignments: Assignment[],
-): Promise<void> {
+export async function saveAssignments(projectId: string, assignments: Assignment[]): Promise<void> {
 	const db = await openDb()
 	const store = txReadWrite(db, STORES.schedules)
 	const record: ScheduleRecord = { id: projectId, projectId, assignments }
