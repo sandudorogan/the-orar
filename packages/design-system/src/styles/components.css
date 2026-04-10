@@ -1,0 +1,38 @@
+/*
+ * Component tokens — shared component-level design decisions.
+ */
+
+:root {
+  /* ── Input ── */
+  --input-bg: var(--surface-card);
+  --input-border: var(--border-default);
+  --input-border-focus: var(--border-focus);
+  --input-text: var(--text-primary);
+  --input-placeholder: var(--text-muted);
+  --input-radius: var(--radius-md);
+  --input-height: 2.25rem;
+  --input-height-sm: 1.75rem;
+  --input-height-lg: 2.75rem;
+
+  /* ── Table ── */
+  --table-header-bg: var(--surface-raised);
+  --table-row-hover: var(--brand-alabaster-grey-100);
+  --table-border: var(--border-subtle);
+  --table-stripe: var(--brand-alabaster-grey-50);
+
+  /* ── Sidebar ── */
+  --sidebar-width: 16rem;
+  --sidebar-collapsed-width: 3.5rem;
+  --sidebar-item-radius: var(--radius-md);
+  --sidebar-item-hover: var(--surface-sidebar-accent);
+  --sidebar-item-active: var(--brand-prussian-blue-800);
+
+  /* ── Timetable Grid ── */
+  --grid-cell-min-width: 6rem;
+  --grid-cell-min-height: 3rem;
+  --grid-header-bg: var(--brand-prussian-blue-600);
+  --grid-header-text: #ffffff;
+  --grid-cell-border: var(--border-subtle);
+  --grid-cell-hover: var(--brand-dusk-blue-50);
+  --grid-cell-selected: var(--status-selected-bg);
+}

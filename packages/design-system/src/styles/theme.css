@@ -1,0 +1,74 @@
+/*
+ * Tailwind v4 theme — exposes semantic tokens as utilities.
+ * Import this in the app's global CSS.
+ */
+
+@import "tailwindcss";
+@import "./semantic.css";
+@import "./components.css";
+@import "./motion.css";
+
+@theme inline {
+  /* ── Colors ── */
+  --color-surface-page: var(--surface-page);
+  --color-surface-card: var(--surface-card);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-surface-sidebar: var(--surface-sidebar);
+  --color-surface-sidebar-accent: var(--surface-sidebar-accent);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
+  --color-text-on-sidebar: var(--text-on-sidebar);
+  --color-text-link: var(--text-link);
+
+  --color-border-default: var(--border-default);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+  --color-border-focus: var(--border-focus);
+
+  --color-action-primary: var(--action-primary);
+  --color-action-primary-hover: var(--action-primary-hover);
+  --color-action-primary-active: var(--action-primary-active);
+  --color-action-primary-text: var(--action-primary-text);
+  --color-action-secondary: var(--action-secondary);
+  --color-action-secondary-hover: var(--action-secondary-hover);
+  --color-action-secondary-text: var(--action-secondary-text);
+  --color-action-ghost-hover: var(--action-ghost-hover);
+  --color-action-destructive: var(--action-destructive);
+  --color-action-destructive-hover: var(--action-destructive-hover);
+  --color-action-destructive-text: var(--action-destructive-text);
+
+  --color-feedback-success: var(--feedback-success);
+  --color-feedback-success-bg: var(--feedback-success-bg);
+  --color-feedback-warning: var(--feedback-warning);
+  --color-feedback-warning-bg: var(--feedback-warning-bg);
+  --color-feedback-error: var(--feedback-error);
+  --color-feedback-error-bg: var(--feedback-error-bg);
+  --color-feedback-info: var(--feedback-info);
+  --color-feedback-info-bg: var(--feedback-info-bg);
+
+  --color-status-conflict: var(--status-conflict);
+  --color-status-conflict-bg: var(--status-conflict-bg);
+  --color-status-unplaced: var(--status-unplaced);
+  --color-status-unplaced-bg: var(--status-unplaced-bg);
+  --color-status-locked: var(--status-locked);
+  --color-status-locked-bg: var(--status-locked-bg);
+  --color-status-generated: var(--status-generated);
+  --color-status-generated-bg: var(--status-generated-bg);
+  --color-status-selected: var(--status-selected);
+  --color-status-selected-bg: var(--status-selected-bg);
+
+  /* ── Radius ── */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  /* ── Sidebar ── */
+  --sidebar-width: var(--sidebar-width);
+  --sidebar-collapsed-width: var(--sidebar-collapsed-width);
+}

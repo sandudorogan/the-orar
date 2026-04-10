@@ -1,0 +1,72 @@
+/*
+ * Brand palette — immutable raw tokens.
+ * These are the source-of-truth color values.
+ * Never reference these directly in feature code; use semantic tokens instead.
+ */
+
+:root {
+  /* Ink Black — near-black with subtle warm undertone */
+  --brand-ink-black-50: #f5f5f5;
+  --brand-ink-black-100: #e8e8e8;
+  --brand-ink-black-200: #c9c9c9;
+  --brand-ink-black-300: #a3a3a3;
+  --brand-ink-black-400: #737373;
+  --brand-ink-black-500: #4a4a4a;
+  --brand-ink-black-600: #333333;
+  --brand-ink-black-700: #262626;
+  --brand-ink-black-800: #1a1a1a;
+  --brand-ink-black-900: #111111;
+  --brand-ink-black-950: #0a0a0a;
+
+  /* Prussian Blue — deep authoritative blue */
+  --brand-prussian-blue-50: #eef4f9;
+  --brand-prussian-blue-100: #d5e4f0;
+  --brand-prussian-blue-200: #a8c8e1;
+  --brand-prussian-blue-300: #72a4cc;
+  --brand-prussian-blue-400: #4680b0;
+  --brand-prussian-blue-500: #2d6090;
+  --brand-prussian-blue-600: #1e4d78;
+  --brand-prussian-blue-700: #163c5f;
+  --brand-prussian-blue-800: #0f2d4a;
+  --brand-prussian-blue-900: #0a2039;
+  --brand-prussian-blue-950: #06142b;
+
+  /* Dusk Blue — medium tone, slightly muted */
+  --brand-dusk-blue-50: #f0f5fa;
+  --brand-dusk-blue-100: #dce8f3;
+  --brand-dusk-blue-200: #b8d0e6;
+  --brand-dusk-blue-300: #8db3d4;
+  --brand-dusk-blue-400: #6594be;
+  --brand-dusk-blue-500: #4a78a4;
+  --brand-dusk-blue-600: #3a6088;
+  --brand-dusk-blue-700: #2e4d6e;
+  --brand-dusk-blue-800: #243d58;
+  --brand-dusk-blue-900: #1b2e44;
+  --brand-dusk-blue-950: #111d2e;
+
+  /* Dusty Denim — muted blue-grey, soft and approachable */
+  --brand-dusty-denim-50: #f3f5f7;
+  --brand-dusty-denim-100: #e3e8ed;
+  --brand-dusty-denim-200: #c7d0da;
+  --brand-dusty-denim-300: #a3b1c1;
+  --brand-dusty-denim-400: #8494a8;
+  --brand-dusty-denim-500: #6b7d93;
+  --brand-dusty-denim-600: #576679;
+  --brand-dusty-denim-700: #475363;
+  --brand-dusty-denim-800: #3b4452;
+  --brand-dusty-denim-900: #303845;
+  --brand-dusty-denim-950: #1f242e;
+
+  /* Alabaster Grey — warm light neutral */
+  --brand-alabaster-grey-50: #fafaf9;
+  --brand-alabaster-grey-100: #f5f4f2;
+  --brand-alabaster-grey-200: #eae8e4;
+  --brand-alabaster-grey-300: #d8d5cf;
+  --brand-alabaster-grey-400: #c2bdb5;
+  --brand-alabaster-grey-500: #a9a39a;
+  --brand-alabaster-grey-600: #908980;
+  --brand-alabaster-grey-700: #736d66;
+  --brand-alabaster-grey-800: #5c5751;
+  --brand-alabaster-grey-900: #4a4640;
+  --brand-alabaster-grey-950: #2e2b28;
+}

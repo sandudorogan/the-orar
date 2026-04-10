@@ -1,0 +1,87 @@
+/*
+ * Semantic tokens — map brand palette to UI intent.
+ * Feature code references only these tokens.
+ */
+
+@import "./brand.css";
+
+:root {
+  /* ── Surface ── */
+  --surface-page: var(--brand-alabaster-grey-50);
+  --surface-card: #ffffff;
+  --surface-raised: var(--brand-alabaster-grey-100);
+  --surface-sunken: var(--brand-alabaster-grey-200);
+  --surface-overlay: rgba(10, 10, 10, 0.5);
+  --surface-sidebar: var(--brand-prussian-blue-950);
+  --surface-sidebar-accent: var(--brand-prussian-blue-900);
+
+  /* ── Text ── */
+  --text-primary: var(--brand-ink-black-900);
+  --text-secondary: var(--brand-ink-black-500);
+  --text-muted: var(--brand-ink-black-400);
+  --text-inverse: var(--brand-alabaster-grey-50);
+  --text-on-sidebar: var(--brand-alabaster-grey-200);
+  --text-link: var(--brand-prussian-blue-600);
+
+  /* ── Border ── */
+  --border-default: var(--brand-alabaster-grey-300);
+  --border-subtle: var(--brand-alabaster-grey-200);
+  --border-strong: var(--brand-ink-black-300);
+  --border-focus: var(--brand-dusk-blue-500);
+
+  /* ── Action ── */
+  --action-primary: var(--brand-prussian-blue-600);
+  --action-primary-hover: var(--brand-prussian-blue-700);
+  --action-primary-active: var(--brand-prussian-blue-800);
+  --action-primary-text: #ffffff;
+  --action-secondary: var(--brand-dusk-blue-100);
+  --action-secondary-hover: var(--brand-dusk-blue-200);
+  --action-secondary-text: var(--brand-dusk-blue-800);
+  --action-ghost-hover: var(--brand-alabaster-grey-200);
+  --action-destructive: #dc2626;
+  --action-destructive-hover: #b91c1c;
+  --action-destructive-text: #ffffff;
+
+  /* ── Feedback ── */
+  --feedback-success: #16a34a;
+  --feedback-success-bg: #f0fdf4;
+  --feedback-warning: #ca8a04;
+  --feedback-warning-bg: #fefce8;
+  --feedback-error: #dc2626;
+  --feedback-error-bg: #fef2f2;
+  --feedback-info: var(--brand-dusk-blue-500);
+  --feedback-info-bg: var(--brand-dusk-blue-50);
+
+  /* ── Scheduling State ── */
+  --status-conflict: #dc2626;
+  --status-conflict-bg: #fef2f2;
+  --status-unplaced: var(--brand-dusty-denim-400);
+  --status-unplaced-bg: var(--brand-dusty-denim-50);
+  --status-locked: var(--brand-ink-black-600);
+  --status-locked-bg: var(--brand-ink-black-100);
+  --status-generated: #16a34a;
+  --status-generated-bg: #f0fdf4;
+  --status-selected: var(--brand-dusk-blue-500);
+  --status-selected-bg: var(--brand-dusk-blue-50);
+
+  /* ── Radius ── */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+}
+
+/* ── Dark mode (future-ready) ── */
+@media (prefers-color-scheme: dark) {
+  :root.dark {
+    --surface-page: var(--brand-ink-black-950);
+    --surface-card: var(--brand-ink-black-900);
+    --surface-raised: var(--brand-ink-black-800);
+    --surface-sunken: var(--brand-ink-black-950);
+    --text-primary: var(--brand-alabaster-grey-100);
+    --text-secondary: var(--brand-alabaster-grey-400);
+    --text-muted: var(--brand-alabaster-grey-500);
+    --border-default: var(--brand-ink-black-700);
+    --border-subtle: var(--brand-ink-black-800);
+  }
+}
