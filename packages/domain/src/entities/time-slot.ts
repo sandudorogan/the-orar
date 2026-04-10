@@ -20,3 +20,11 @@ export function parseTimeSlotKey(key: string): TimeSlot {
 	const [day, periodStr] = key.split(":")
 	return { day: day as TimeSlot["day"], period: Number(periodStr) }
 }
+
+export function timeSlotKeysForSpan(slot: TimeSlot, duration: number): string[] {
+	const keys: string[] = []
+	for (let offset = 0; offset < duration; offset++) {
+		keys.push(`${slot.day}:${slot.period + offset}`)
+	}
+	return keys
+}

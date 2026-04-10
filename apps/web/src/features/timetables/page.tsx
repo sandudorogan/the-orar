@@ -67,6 +67,7 @@ export function TimetablesPage() {
 	const periods = project.calendar.periodsPerDay
 
 	const dayLabels = days.map((d) => d.charAt(0).toUpperCase() + d.slice(1))
+	const dayToLabel = Object.fromEntries(days.map((d, i) => [d, dayLabels[i]!]))
 
 	const entityOptions = useMemo(() => {
 		switch (viewMode) {
@@ -111,7 +112,7 @@ export function TimetablesPage() {
 			const activity = project.activities.find((a) => a.id === assignment.activityId)
 			if (!activity) continue
 
-			const key = `${assignment.timeSlot.day}:${assignment.timeSlot.period}`
+			const key = `${dayToLabel[assignment.timeSlot.day]}:${assignment.timeSlot.period}`
 			const slotKey = timeSlotKey(assignment.timeSlot)
 			const hasConflict = conflictSlotKeys.has(slotKey)
 

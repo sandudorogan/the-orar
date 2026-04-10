@@ -32,7 +32,7 @@ export function prepareProblem(
 ): PreparedProblem {
 	const allSlots = generateAllSlots(calendar)
 
-	const unavailableMap = buildUnavailableMap(availabilityRules)
+	const unavailableMap = buildUnavailableMap(availabilityRules, classGroups)
 
 	const prepared = activities.flatMap((activity) => {
 		const parts = expandActivity(activity)
@@ -68,15 +68,26 @@ function generateAllSlots(calendar: Calendar): TimeSlot[] {
 	return slots
 }
 
-function buildUnavailableMap(rules: AvailabilityRule[]): Map<string, Set<string>> {
+function buildUnavailableMap(
+	rules: AvailabilityRule[],
+	classGroups: ClassGroup[],
+): Map<string, Set<string>> {
 	const map = new Map<string, Set<string>>()
 	for (const rule of rules) {
 		if (rule.type !== "unavailable") continue
-		const set = map.get(rule.targetId) ?? new Set()
-		for (const slot of rule.timeSlots) {
-			set.add(timeSlotKey(slot))
+
+		const targetIds =
+			rule.targetType === "class"
+				? classGroups.filter((g) => g.classId === rule.targetId).map((g) => g.id)
+				: [rule.targetId]
+
+		for (const targetId of targetIds) {
+			const set = map.get(targetId) ?? new Set()
+			for (const slot of rule.timeSlots) {
+				set.add(timeSlotKey(slot))
+			}
+			map.set(targetId, set)
 		}
-		map.set(rule.targetId, set)
 	}
 	return map
 }

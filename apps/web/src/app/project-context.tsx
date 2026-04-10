@@ -1,4 +1,5 @@
 import { getAllProjects, saveProject } from "@/shared/storage/project-store.ts"
+import { getAssignments, saveAssignments } from "@/shared/storage/schedule-store.ts"
 import type {
 	Activity,
 	Assignment,
@@ -108,10 +109,12 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 	const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
 	useEffect(() => {
-		getAllProjects().then((projects) => {
+		getAllProjects().then(async (projects) => {
 			const existing = projects[0]
 			if (existing) {
 				setProject(existing)
+				const stored = await getAssignments(existing.id)
+				if (stored.length > 0) setAssignments(stored)
 			} else {
 				const newProject = createDefaultProject()
 				setProject(newProject)
@@ -319,6 +322,14 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 		[updateProject],
 	)
 
+	const persistAssignments = useCallback(
+		(next: Assignment[]) => {
+			setAssignments(next)
+			if (project) saveAssignments(project.id, next)
+		},
+		[project],
+	)
+
 	const replaceProject = useCallback((newProject: ScheduleProject) => {
 		setProject(newProject)
 		saveProject(newProject)
@@ -334,7 +345,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 				project,
 				isLoading,
 				assignments,
-				setAssignments,
+				setAssignments: persistAssignments,
 				addClass,
 				updateClass,
 				deleteClass,

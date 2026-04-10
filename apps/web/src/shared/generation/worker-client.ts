@@ -6,6 +6,7 @@ export type GenerationCallback = (response: SolverResponse) => void
 
 export class GenerationClient {
 	private worker: Worker | null = null
+	private cancelTimeout: ReturnType<typeof setTimeout> | null = null
 
 	start(
 		project: ScheduleProject,
@@ -32,11 +33,15 @@ export class GenerationClient {
 	cancel(): void {
 		if (this.worker) {
 			this.worker.postMessage({ type: "cancel" })
-			this.cleanup()
+			this.cancelTimeout = setTimeout(() => this.cleanup(), 2000)
 		}
 	}
 
 	private cleanup(): void {
+		if (this.cancelTimeout) {
+			clearTimeout(this.cancelTimeout)
+			this.cancelTimeout = null
+		}
 		this.worker?.terminate()
 		this.worker = null
 	}

@@ -12,6 +12,7 @@ export {
 	createTimeSlot,
 	timeSlotKey,
 	parseTimeSlotKey,
+	timeSlotKeysForSpan,
 } from "./time-slot.ts"
 export { ClassSchema, type Class, createClass } from "./class.ts"
 export { ClassGroupSchema, type ClassGroup, createClassGroup } from "./class-group.ts"

@@ -1,4 +1,4 @@
-import { timeSlotKey } from "../entities/time-slot.ts"
+import { timeSlotKey, timeSlotKeysForSpan } from "../entities/time-slot.ts"
 import type { Constraint, ConstraintViolation, ScheduleContext } from "./types.ts"
 
 export function createClassroomAvailability(): Constraint {
@@ -21,18 +21,22 @@ export function createClassroomAvailability(): Constraint {
 
 			for (const assignment of context.assignments) {
 				if (!assignment.roomId) continue
-				const slotKey = timeSlotKey(assignment.timeSlot)
 				const blocked = unavailableSlots.get(assignment.roomId)
-				if (blocked?.has(slotKey)) {
-					const room = context.classrooms.find((r) => r.id === assignment.roomId)
-					violations.push({
-						constraintId: "classroom-availability",
-						constraintType: "classroom-availability",
-						weight: "hard",
-						activityIds: [assignment.activityId],
-						timeSlot: assignment.timeSlot,
-						description: `Classroom ${room?.name ?? assignment.roomId} is unavailable at this time`,
-					})
+				if (!blocked) continue
+				const spanKeys = timeSlotKeysForSpan(assignment.timeSlot, assignment.duration ?? 1)
+				for (const slotKey of spanKeys) {
+					if (blocked.has(slotKey)) {
+						const room = context.classrooms.find((r) => r.id === assignment.roomId)
+						violations.push({
+							constraintId: "classroom-availability",
+							constraintType: "classroom-availability",
+							weight: "hard",
+							activityIds: [assignment.activityId],
+							timeSlot: assignment.timeSlot,
+							description: `Classroom ${room?.name ?? assignment.roomId} is unavailable at this time`,
+						})
+						break
+					}
 				}
 			}
 

@@ -32,6 +32,8 @@ self.onmessage = (event: MessageEvent<SolverRequest>) => {
 			totalCount: problem.activities.length,
 		}
 
+		const startTime = Date.now()
+
 		for (let attempt = 0; attempt < config.maxAttempts; attempt++) {
 			if (cancelled) {
 				post({ type: "cancelled" })
@@ -61,6 +63,7 @@ self.onmessage = (event: MessageEvent<SolverRequest>) => {
 			}
 
 			if (result.placedCount === result.totalCount) break
+			if (Date.now() - startTime >= config.timeoutMs) break
 		}
 
 		if (cancelled) {

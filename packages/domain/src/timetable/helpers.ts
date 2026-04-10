@@ -59,6 +59,6 @@ function mapConstraintTypeToConflictType(constraintType: string): Conflict["type
 		case "classroom-availability":
 			return "unavailability-violation"
 		default:
-			return "teacher-overlap"
+			return "unplaced-activity"
 	}
 }

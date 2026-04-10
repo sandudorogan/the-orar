@@ -17,7 +17,7 @@ const localeConfigs: Record<Locale, LocaleConfig> = {
 	ro: {
 		code: "ro",
 		name: "Romanian",
-		nativeName: "Romana",
+		nativeName: "Română",
 		dir: "ltr",
 	},
 }
@@ -32,3 +32,5 @@ export function isValidLocale(code: string): code is Locale {
 export function getLocaleConfig(locale: Locale): LocaleConfig {
 	return localeConfigs[locale]
 }
+
+export { getCatalog } from "./catalogs/get-catalog.ts"

@@ -3,15 +3,32 @@ import { ClassesPage } from "@/features/classes/page.tsx"
 import { ClassroomsPage } from "@/features/classrooms/page.tsx"
 import { ConstraintsPage } from "@/features/constraints/page.tsx"
 import { DashboardPage } from "@/features/dashboard/page.tsx"
-import { ExportsPage } from "@/features/exports/page.tsx"
 import { GeneratePage } from "@/features/generate/page.tsx"
 import { SettingsPage } from "@/features/settings/page.tsx"
 import { TeachersPage } from "@/features/teachers/page.tsx"
 import { TimetablesPage } from "@/features/timetables/page.tsx"
-import { Outlet, createRootRoute, createRoute, createRouter } from "@tanstack/react-router"
+import {
+	Outlet,
+	createRootRoute,
+	createRoute,
+	createRouter,
+	lazyRouteComponent,
+} from "@tanstack/react-router"
 import { AppLayout } from "./layout.tsx"
 
 const rootRoute = createRootRoute({
+	component: () => <Outlet />,
+})
+
+const landingRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/",
+	component: lazyRouteComponent(() => import("@/features/landing/page.tsx"), "LandingPage"),
+})
+
+const appLayoutRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	id: "app",
 	component: () => (
 		<AppLayout>
 			<Outlet />
@@ -20,76 +37,79 @@ const rootRoute = createRootRoute({
 })
 
 const dashboardRoute = createRoute({
-	getParentRoute: () => rootRoute,
-	path: "/",
+	getParentRoute: () => appLayoutRoute,
+	path: "/dashboard",
 	component: DashboardPage,
 })
 
 const classesRoute = createRoute({
-	getParentRoute: () => rootRoute,
+	getParentRoute: () => appLayoutRoute,
 	path: "/classes",
 	component: ClassesPage,
 })
 
 const teachersRoute = createRoute({
-	getParentRoute: () => rootRoute,
+	getParentRoute: () => appLayoutRoute,
 	path: "/teachers",
 	component: TeachersPage,
 })
 
 const classroomsRoute = createRoute({
-	getParentRoute: () => rootRoute,
+	getParentRoute: () => appLayoutRoute,
 	path: "/classrooms",
 	component: ClassroomsPage,
 })
 
 const activitiesRoute = createRoute({
-	getParentRoute: () => rootRoute,
+	getParentRoute: () => appLayoutRoute,
 	path: "/activities",
 	component: ActivitiesPage,
 })
 
 const constraintsRoute = createRoute({
-	getParentRoute: () => rootRoute,
+	getParentRoute: () => appLayoutRoute,
 	path: "/constraints",
 	component: ConstraintsPage,
 })
 
 const generateRoute = createRoute({
-	getParentRoute: () => rootRoute,
+	getParentRoute: () => appLayoutRoute,
 	path: "/generate",
 	component: GeneratePage,
 })
 
 const timetablesRoute = createRoute({
-	getParentRoute: () => rootRoute,
+	getParentRoute: () => appLayoutRoute,
 	path: "/timetables",
 	component: TimetablesPage,
 })
 
 const exportsRoute = createRoute({
-	getParentRoute: () => rootRoute,
+	getParentRoute: () => appLayoutRoute,
 	path: "/exports",
-	component: ExportsPage,
+	component: lazyRouteComponent(() => import("@/features/exports/page.tsx"), "ExportsPage"),
 })
 
 const settingsRoute = createRoute({
-	getParentRoute: () => rootRoute,
+	getParentRoute: () => appLayoutRoute,
 	path: "/settings",
 	component: SettingsPage,
 })
 
 const routeTree = rootRoute.addChildren([
-	dashboardRoute,
-	classesRoute,
-	teachersRoute,
-	classroomsRoute,
-	activitiesRoute,
-	constraintsRoute,
-	generateRoute,
-	timetablesRoute,
-	exportsRoute,
-	settingsRoute,
+	landingRoute,
+	appLayoutRoute.addChildren([
+		dashboardRoute,
+		classesRoute,
+		teachersRoute,
+		classroomsRoute,
+		activitiesRoute,
+		constraintsRoute,
+		generateRoute,
+		timetablesRoute,
+		exportsRoute,
+		settingsRoute,
+	]),
 ])
 
 export const router = createRouter({ routeTree })

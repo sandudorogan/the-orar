@@ -1,5 +1,5 @@
 import type { Assignment, TimeSlot } from "@orar/domain"
-import { timeSlotKey } from "@orar/domain"
+import { timeSlotKey, timeSlotKeysForSpan } from "@orar/domain"
 import type { PreparedActivity, PreparedProblem } from "../preprocessing/prepare.ts"
 
 export interface GenerationResult {
@@ -40,23 +40,24 @@ export function generate(
 			timeSlot: slot,
 			roomId: room?.id,
 			locked: false,
+			duration: prepared.duration,
 		}
 		assignments.push(assignment)
 
-		const slotKey = timeSlotKey(slot)
+		const spanKeys = timeSlotKeysForSpan(slot, prepared.duration)
 		for (const teacherId of prepared.activity.teacherIds) {
 			const used = teacherSlotUsed.get(teacherId) ?? new Set()
-			used.add(slotKey)
+			for (const k of spanKeys) used.add(k)
 			teacherSlotUsed.set(teacherId, used)
 		}
 		for (const groupId of prepared.activity.classGroupIds) {
 			const used = groupSlotUsed.get(groupId) ?? new Set()
-			used.add(slotKey)
+			for (const k of spanKeys) used.add(k)
 			groupSlotUsed.set(groupId, used)
 		}
 		if (room) {
 			const used = roomSlotUsed.get(room.id) ?? new Set()
-			used.add(slotKey)
+			for (const k of spanKeys) used.add(k)
 			roomSlotUsed.set(room.id, used)
 		}
 
@@ -75,13 +76,15 @@ function pickBestSlot(
 	roomUsed: Map<string, Set<string>>,
 ): TimeSlot | null {
 	const candidates = prepared.availableSlots.filter((slot) => {
-		const key = timeSlotKey(slot)
+		const spanKeys = timeSlotKeysForSpan(slot, prepared.duration)
 
-		for (const teacherId of prepared.activity.teacherIds) {
-			if (teacherUsed.get(teacherId)?.has(key)) return false
-		}
-		for (const groupId of prepared.activity.classGroupIds) {
-			if (groupUsed.get(groupId)?.has(key)) return false
+		for (const key of spanKeys) {
+			for (const teacherId of prepared.activity.teacherIds) {
+				if (teacherUsed.get(teacherId)?.has(key)) return false
+			}
+			for (const groupId of prepared.activity.classGroupIds) {
+				if (groupUsed.get(groupId)?.has(key)) return false
+			}
 		}
 
 		return true
@@ -91,9 +94,13 @@ function pickBestSlot(
 
 	const scored = candidates.map((slot) => {
 		let score = 0
-		const key = timeSlotKey(slot)
+		const spanKeys = timeSlotKeysForSpan(slot, prepared.duration)
 
-		if (prepared.compatibleRooms.some((r) => !roomUsed.get(r.id)?.has(key))) {
+		if (
+			prepared.compatibleRooms.some(
+				(r) => !spanKeys.some((k) => roomUsed.get(r.id)?.has(k)),
+			)
+		) {
 			score += 10
 		}
 
@@ -114,9 +121,10 @@ function pickRoom(
 	slot: TimeSlot,
 	roomUsed: Map<string, Set<string>>,
 ): { id: string } | undefined {
-	const key = timeSlotKey(slot)
+	const spanKeys = timeSlotKeysForSpan(slot, prepared.duration)
 	for (const room of prepared.compatibleRooms) {
-		if (!roomUsed.get(room.id)?.has(key)) {
+		const used = roomUsed.get(room.id)
+		if (!used || !spanKeys.some((k) => used.has(k))) {
 			return room
 		}
 	}

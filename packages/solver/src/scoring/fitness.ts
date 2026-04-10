@@ -1,5 +1,5 @@
 import type { Assignment, ScheduleProject } from "@orar/domain"
-import { type ScheduleContext, createDefaultRegistry } from "@orar/domain"
+import { type ScheduleContext, createDefaultRegistry, expandSplitActivity } from "@orar/domain"
 
 export function computeFitness(project: ScheduleProject, assignments: Assignment[]): number {
 	const context: ScheduleContext = {
@@ -21,7 +21,10 @@ export function computeFitness(project: ScheduleProject, assignments: Assignment
 		score -= v.weight === "hard" ? 10 : 1
 	}
 
-	const totalActivities = project.activities.reduce((sum, a) => sum + a.totalPerWeek, 0)
+	const totalActivities = project.activities.reduce(
+		(sum, a) => sum + expandSplitActivity(a).length,
+		0,
+	)
 	const placedRatio = assignments.length / Math.max(totalActivities, 1)
 	score *= placedRatio
 

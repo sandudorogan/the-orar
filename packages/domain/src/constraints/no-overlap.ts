@@ -1,4 +1,4 @@
-import { timeSlotKey } from "../entities/time-slot.ts"
+import { timeSlotKeysForSpan } from "../entities/time-slot.ts"
 import type { Constraint, ConstraintViolation, ScheduleContext } from "./types.ts"
 
 export function createNoTeacherOverlap(): Constraint {
@@ -14,12 +14,14 @@ export function createNoTeacherOverlap(): Constraint {
 				const activity = context.activities.find((a) => a.id === assignment.activityId)
 				if (!activity) continue
 
-				const key = timeSlotKey(assignment.timeSlot)
-				for (const teacherId of activity.teacherIds) {
-					const mapKey = `${teacherId}:${key}`
-					const existing = teacherSlotMap.get(mapKey) ?? []
-					existing.push(activity.id)
-					teacherSlotMap.set(mapKey, existing)
+				const spanKeys = timeSlotKeysForSpan(assignment.timeSlot, assignment.duration ?? 1)
+				for (const key of spanKeys) {
+					for (const teacherId of activity.teacherIds) {
+						const mapKey = `${teacherId}:${key}`
+						const existing = teacherSlotMap.get(mapKey) ?? []
+						existing.push(activity.id)
+						teacherSlotMap.set(mapKey, existing)
+					}
 				}
 			}
 
@@ -55,12 +57,14 @@ export function createNoClassOverlap(): Constraint {
 				const activity = context.activities.find((a) => a.id === assignment.activityId)
 				if (!activity) continue
 
-				const key = timeSlotKey(assignment.timeSlot)
-				for (const groupId of activity.classGroupIds) {
-					const mapKey = `${groupId}:${key}`
-					const existing = groupSlotMap.get(mapKey) ?? []
-					existing.push(activity.id)
-					groupSlotMap.set(mapKey, existing)
+				const spanKeys = timeSlotKeysForSpan(assignment.timeSlot, assignment.duration ?? 1)
+				for (const key of spanKeys) {
+					for (const groupId of activity.classGroupIds) {
+						const mapKey = `${groupId}:${key}`
+						const existing = groupSlotMap.get(mapKey) ?? []
+						existing.push(activity.id)
+						groupSlotMap.set(mapKey, existing)
+					}
 				}
 			}
 
@@ -95,10 +99,13 @@ export function createNoRoomOverlap(): Constraint {
 			for (const assignment of context.assignments) {
 				if (!assignment.roomId) continue
 
-				const key = `${assignment.roomId}:${timeSlotKey(assignment.timeSlot)}`
-				const existing = roomSlotMap.get(key) ?? []
-				existing.push(assignment.activityId)
-				roomSlotMap.set(key, existing)
+				const spanKeys = timeSlotKeysForSpan(assignment.timeSlot, assignment.duration ?? 1)
+				for (const slotKey of spanKeys) {
+					const key = `${assignment.roomId}:${slotKey}`
+					const existing = roomSlotMap.get(key) ?? []
+					existing.push(assignment.activityId)
+					roomSlotMap.set(key, existing)
+				}
 			}
 
 			for (const [mapKey, activityIds] of roomSlotMap) {

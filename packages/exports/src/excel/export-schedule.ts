@@ -19,7 +19,7 @@ export async function exportScheduleToExcel(model: ExportScheduleModel): Promise
 
 	sheet.addRow([])
 
-	const headerRow = sheet.addRow(["Period", ...model.days])
+	const headerRow = sheet.addRow([model.periodLabel, ...model.days])
 	headerRow.eachCell((cell) => {
 		cell.font = { bold: true, color: { argb: "FFFFFFFF" } }
 		cell.fill = {

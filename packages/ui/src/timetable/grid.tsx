@@ -43,13 +43,13 @@ export function TimetableGrid({
 				<table className="w-full border-collapse">
 					<thead>
 						<tr>
-							<th className="bg-[var(--grid-header-bg)] text-[var(--grid-header-text)] px-3 py-2 text-left text-xs font-semibold min-w-[4rem] border border-[var(--grid-cell-border)]">
+							<th className="bg-grid-header-bg text-grid-header-text px-3 py-2 text-left text-xs font-semibold min-w-[4rem] border border-grid-cell-border">
 								{periodLabel}
 							</th>
 							{days.map((day) => (
 								<th
 									key={day}
-									className="bg-[var(--grid-header-bg)] text-[var(--grid-header-text)] px-3 py-2 text-center text-xs font-semibold min-w-[var(--grid-cell-min-width)] border border-[var(--grid-cell-border)]"
+									className="bg-grid-header-bg text-grid-header-text px-3 py-2 text-center text-xs font-semibold min-w-[var(--grid-cell-min-width)] border border-grid-cell-border"
 								>
 									{day}
 								</th>
@@ -59,7 +59,7 @@ export function TimetableGrid({
 					<tbody>
 						{keys.map((rowKey, periodIndex) => (
 							<tr key={rowKey}>
-								<td className="bg-surface-raised px-3 py-2 text-center text-xs font-medium text-text-secondary border border-[var(--grid-cell-border)] min-w-[4rem]">
+								<td className="bg-surface-raised px-3 py-2 text-center text-xs font-medium text-text-secondary border border-grid-cell-border min-w-[4rem]">
 									{periodIndex + 1}
 								</td>
 								{days.map((day) => {
@@ -70,8 +70,8 @@ export function TimetableGrid({
 										<td
 											key={key}
 											className={cn(
-												"border border-[var(--grid-cell-border)] p-1 min-h-[var(--grid-cell-min-height)] min-w-[var(--grid-cell-min-width)] align-top",
-												onCellClick && "cursor-pointer hover:bg-[var(--grid-cell-hover)]",
+												"border border-grid-cell-border p-1 min-h-[var(--grid-cell-min-height)] min-w-[var(--grid-cell-min-width)] align-top",
+												onCellClick && "cursor-pointer hover:bg-grid-cell-hover",
 											)}
 											onClick={() => onCellClick?.(day, periodIndex)}
 											onKeyDown={(e) => {

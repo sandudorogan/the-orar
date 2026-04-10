@@ -129,6 +129,7 @@ export function GeneratePage() {
 	function handleCancel() {
 		clientRef.current?.cancel()
 		clientRef.current = null
+		setState((prev) => ({ ...prev, status: "cancelled" }))
 	}
 
 	const isRunning = state.status === "running"

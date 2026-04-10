@@ -64,6 +64,30 @@
   --status-selected: var(--brand-dusk-blue-500);
   --status-selected-bg: var(--brand-dusk-blue-50);
 
+  /* ── Component ── */
+  --table-header-bg: var(--brand-prussian-blue-600);
+  --table-header-text: #ffffff;
+  --table-row-hover: var(--brand-alabaster-grey-100);
+  --table-stripe: var(--brand-alabaster-grey-50);
+  --table-border: var(--brand-alabaster-grey-200);
+
+  --grid-header-bg: var(--brand-prussian-blue-600);
+  --grid-header-text: #ffffff;
+  --grid-cell-border: var(--brand-alabaster-grey-200);
+  --grid-cell-hover: var(--brand-dusk-blue-50);
+  --grid-cell-min-width: 7rem;
+  --grid-cell-min-height: 3.5rem;
+
+  /* ── Landing ── */
+  --landing-accent: var(--brand-prussian-blue-600);
+  --landing-accent-muted: var(--brand-dusk-blue-500);
+  --landing-cell-fill: var(--brand-dusk-blue-50);
+  --landing-cta-bg: var(--brand-prussian-blue-950);
+  --landing-cta-text: var(--brand-dusty-denim-300);
+  --landing-cta-button-bg: #ffffff;
+  --landing-cta-button-text: var(--brand-prussian-blue-950);
+  --landing-cta-button-hover: var(--brand-alabaster-grey-200);
+
   /* ── Radius ── */
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;

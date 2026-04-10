@@ -4,6 +4,7 @@
  */
 
 @import "tailwindcss";
+@import "tw-animate-css";
 @import "./semantic.css";
 @import "./components.css";
 @import "./motion.css";
@@ -67,6 +68,27 @@
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
+
+  /* ── Component ── */
+  --color-table-header-bg: var(--table-header-bg);
+  --color-table-header-text: var(--table-header-text);
+  --color-table-row-hover: var(--table-row-hover);
+  --color-table-stripe: var(--table-stripe);
+  --color-table-border: var(--table-border);
+
+  --color-grid-header-bg: var(--grid-header-bg);
+  --color-grid-header-text: var(--grid-header-text);
+  --color-grid-cell-border: var(--grid-cell-border);
+  --color-grid-cell-hover: var(--grid-cell-hover);
+
+  --color-landing-accent: var(--landing-accent);
+  --color-landing-accent-muted: var(--landing-accent-muted);
+  --color-landing-cell-fill: var(--landing-cell-fill);
+  --color-landing-cta-bg: var(--landing-cta-bg);
+  --color-landing-cta-text: var(--landing-cta-text);
+  --color-landing-cta-button-bg: var(--landing-cta-button-bg);
+  --color-landing-cta-button-text: var(--landing-cta-button-text);
+  --color-landing-cta-button-hover: var(--landing-cta-button-hover);
 
   /* ── Sidebar ── */
   --sidebar-width: var(--sidebar-width);

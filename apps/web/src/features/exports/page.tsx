@@ -1,4 +1,4 @@
-import { useMessages } from "@/app/i18n/use-i18n.ts"
+import { useLocale, useMessages } from "@/app/i18n/use-i18n.ts"
 import { useProject } from "@/app/project-context.tsx"
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Tabs, TabsContent, TabsList, TabsTrigger } from "@orar/ui"
 import { FileDown, FileSpreadsheet, FileText, Loader2, Package } from "lucide-react"
@@ -9,6 +9,7 @@ type ExportFormat = "docx" | "excel"
 
 export function ExportsPage() {
 	const messages = useMessages()
+	const { locale } = useLocale()
 	const { project, assignments } = useProject()
 	const [exporting, setExporting] = useState(false)
 
@@ -32,6 +33,7 @@ export function ExportsPage() {
 								project.activities,
 								project.classGroups,
 								project.classrooms,
+								locale,
 							),
 						)
 					}
@@ -45,6 +47,7 @@ export function ExportsPage() {
 								project.activities,
 								project.teachers,
 								project.classrooms,
+								locale,
 							),
 						)
 					}
@@ -58,6 +61,7 @@ export function ExportsPage() {
 								project.activities,
 								project.teachers,
 								project.classGroups,
+								locale,
 							),
 						)
 					}
@@ -95,13 +99,13 @@ export function ExportsPage() {
 
 				const allModels = [
 					...project.teachers.map((t) =>
-						buildTeacherExportModel(t, project.calendar, assignments, project.activities, project.classGroups, project.classrooms),
+						buildTeacherExportModel(t, project.calendar, assignments, project.activities, project.classGroups, project.classrooms, locale),
 					),
 					...project.classGroups.map((g) =>
-						buildClassGroupExportModel(g, project.calendar, assignments, project.activities, project.teachers, project.classrooms),
+						buildClassGroupExportModel(g, project.calendar, assignments, project.activities, project.teachers, project.classrooms, locale),
 					),
 					...project.classrooms.map((r) =>
-						buildClassroomExportModel(r, project.calendar, assignments, project.activities, project.teachers, project.classGroups),
+						buildClassroomExportModel(r, project.calendar, assignments, project.activities, project.teachers, project.classGroups, locale),
 					),
 				]
 

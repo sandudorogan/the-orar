@@ -7,6 +7,7 @@ import type {
 	Teacher,
 	TimeSlot,
 } from "@orar/domain"
+import { type Locale, getCatalog, translateDayName } from "@orar/locales"
 
 export interface ExportTimetableRow {
 	period: number
@@ -28,6 +29,7 @@ export interface ExportScheduleModel {
 	subtitle: string
 	days: string[]
 	periods: number
+	periodLabel: string
 	rows: ExportTimetableRow[]
 }
 
@@ -38,7 +40,9 @@ export function buildTeacherExportModel(
 	activities: Activity[],
 	classGroups: ClassGroup[],
 	classrooms: Classroom[],
+	locale: Locale = "en",
 ): ExportScheduleModel {
+	const catalog = getCatalog(locale)
 	const teacherAssignments = assignments.filter((a) => {
 		const act = activities.find((act) => act.id === a.activityId)
 		return act?.teacherIds.includes(teacher.id)
@@ -46,13 +50,15 @@ export function buildTeacherExportModel(
 
 	return buildExportModel(
 		teacher.name,
-		"Teacher Schedule",
+		catalog.exports.perTeacher,
 		calendar,
 		teacherAssignments,
 		activities,
 		classGroups,
 		classrooms,
 		[],
+		locale,
+		catalog.timetables.period,
 	)
 }
 
@@ -63,7 +69,9 @@ export function buildClassGroupExportModel(
 	activities: Activity[],
 	teachers: Teacher[],
 	classrooms: Classroom[],
+	locale: Locale = "en",
 ): ExportScheduleModel {
+	const catalog = getCatalog(locale)
 	const groupAssignments = assignments.filter((a) => {
 		const act = activities.find((act) => act.id === a.activityId)
 		return act?.classGroupIds.includes(group.id)
@@ -71,13 +79,15 @@ export function buildClassGroupExportModel(
 
 	return buildExportModel(
 		group.name,
-		"Class Schedule",
+		catalog.exports.perClass,
 		calendar,
 		groupAssignments,
 		activities,
 		[],
 		classrooms,
 		teachers,
+		locale,
+		catalog.timetables.period,
 	)
 }
 
@@ -88,18 +98,22 @@ export function buildClassroomExportModel(
 	activities: Activity[],
 	teachers: Teacher[],
 	classGroups: ClassGroup[],
+	locale: Locale = "en",
 ): ExportScheduleModel {
+	const catalog = getCatalog(locale)
 	const roomAssignments = assignments.filter((a) => a.roomId === classroom.id)
 
 	return buildExportModel(
 		classroom.name,
-		"Room Schedule",
+		catalog.exports.perClassroom,
 		calendar,
 		roomAssignments,
 		activities,
 		classGroups,
 		[],
 		teachers,
+		locale,
+		catalog.timetables.period,
 	)
 }
 
@@ -112,8 +126,10 @@ function buildExportModel(
 	classGroups: ClassGroup[],
 	classrooms: Classroom[],
 	teachers: Teacher[],
+	locale: Locale = "en",
+	periodLabel = "Period",
 ): ExportScheduleModel {
-	const days = calendar.activeDays.map((d) => d.charAt(0).toUpperCase() + d.slice(1))
+	const days = calendar.activeDays.map((d) => translateDayName(d, locale))
 	const rows: ExportTimetableRow[] = []
 
 	for (let period = 0; period < calendar.periodsPerDay; period++) {
@@ -154,5 +170,5 @@ function buildExportModel(
 		rows.push({ period, cells })
 	}
 
-	return { title, subtitle, days, periods: calendar.periodsPerDay, rows }
+	return { title, subtitle, days, periods: calendar.periodsPerDay, periodLabel, rows }
 }

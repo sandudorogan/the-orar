@@ -6,6 +6,7 @@ export {
 	defaultLocale,
 	isValidLocale,
 	getLocaleConfig,
+	getCatalog,
 } from "./language-registry.ts"
 export {
 	formatDate,
@@ -13,4 +14,5 @@ export {
 	formatNumber,
 	formatDayOfWeek,
 	formatShortDate,
+	translateDayName,
 } from "./formatting/intl.ts"

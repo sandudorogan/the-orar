@@ -29,3 +29,21 @@ export function formatShortDate(date: Date, locale: Locale): string {
 		day: "numeric",
 	}).format(date)
 }
+
+const DAY_INDEX: Record<string, number> = {
+	monday: 1,
+	tuesday: 2,
+	wednesday: 3,
+	thursday: 4,
+	friday: 5,
+	saturday: 6,
+	sunday: 0,
+}
+
+export function translateDayName(day: string, locale: Locale): string {
+	const index = DAY_INDEX[day.toLowerCase()]
+	if (index === undefined) return day.charAt(0).toUpperCase() + day.slice(1)
+	const date = new Date(2024, 0, 7 + index)
+	const name = new Intl.DateTimeFormat(locale, { weekday: "long" }).format(date)
+	return name.charAt(0).toUpperCase() + name.slice(1)
+}
