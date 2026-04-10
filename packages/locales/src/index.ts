@@ -7,4 +7,10 @@ export {
 	isValidLocale,
 	getLocaleConfig,
 } from "./language-registry.ts"
-export { formatDate, formatTime, formatNumber, formatDayOfWeek, formatShortDate } from "./formatting/intl.ts"
+export {
+	formatDate,
+	formatTime,
+	formatNumber,
+	formatDayOfWeek,
+	formatShortDate,
+} from "./formatting/intl.ts"

@@ -124,6 +124,36 @@ export interface MessageCatalog {
 		stopGeneration: string
 		attempts: string
 		progress: string
+		configuration: string
+		timeout: string
+		timeoutSeconds: string
+		results: string
+		fitnessScore: string
+		placed: string
+		total: string
+		conflicts: string
+		hardConflicts: string
+		softViolations: string
+		noConflicts: string
+		pending: string
+		running: string
+		completed: string
+		failed: string
+		cancelled: string
+		noSchedule: string
+		affectedActivities: string
+		severity: string
+		hard: string
+		soft: string
+	}
+	timetables: {
+		byClass: string
+		byTeacher: string
+		byClassroom: string
+		selectEntity: string
+		period: string
+		noScheduleGenerated: string
+		generateFirst: string
 	}
 	availability: {
 		available: string
