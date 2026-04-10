@@ -1,11 +1,5 @@
 import { type Locale, type MessageCatalog, defaultLocale } from "@orar/locales"
-import {
-	type ReactNode,
-	createContext,
-	useCallback,
-	useEffect,
-	useState,
-} from "react"
+import { type ReactNode, createContext, useCallback, useEffect, useState } from "react"
 import { loadCatalog } from "./load-locale.ts"
 
 export interface I18nContextValue {

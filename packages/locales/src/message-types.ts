@@ -10,6 +10,20 @@ export interface MessageCatalog {
 		noResults: string
 		confirm: string
 		back: string
+		add: string
+		name: string
+		shortName: string
+		actions: string
+		comingSoon: string
+		welcome: string
+		quickActions: string
+		importJson: string
+		exportJson: string
+		yes: string
+		no: string
+		enabled: string
+		disabled: string
+		deleteConfirm: string
 	}
 	nav: {
 		dashboard: string
@@ -32,6 +46,73 @@ export interface MessageCatalog {
 		activity: string
 		schedule: string
 		timeSlot: string
+	}
+	dashboard: {
+		projectOverview: string
+		totalClasses: string
+		totalTeachers: string
+		totalClassrooms: string
+		totalActivities: string
+		totalConstraints: string
+		addClass: string
+		addTeacher: string
+		addClassroom: string
+		addActivity: string
+	}
+	classes: {
+		title: string
+		addClass: string
+		editClass: string
+		year: string
+		studentCount: string
+		groupCount: string
+		groups: string
+		addGroup: string
+		editGroup: string
+		noClasses: string
+		noGroups: string
+		selectClass: string
+	}
+	teachers: {
+		title: string
+		addTeacher: string
+		editTeacher: string
+		email: string
+		maxHoursDay: string
+		maxHoursWeek: string
+		noTeachers: string
+	}
+	classrooms: {
+		title: string
+		addClassroom: string
+		editClassroom: string
+		capacity: string
+		building: string
+		tags: string
+		noClassrooms: string
+	}
+	activities: {
+		title: string
+		addActivity: string
+		editActivity: string
+		subjectName: string
+		assignedTeachers: string
+		assignedGroups: string
+		duration: string
+		totalPerWeek: string
+		splitConfig: string
+		preferredRooms: string
+		noActivities: string
+	}
+	constraints: {
+		title: string
+		addRule: string
+		editRule: string
+		targetType: string
+		target: string
+		type: string
+		timeSlots: string
+		noRules: string
 	}
 	scheduling: {
 		conflict: string
@@ -61,5 +142,9 @@ export interface MessageCatalog {
 		language: string
 		theme: string
 		autoSave: string
+		importExport: string
+		importProject: string
+		exportProject: string
+		general: string
 	}
 }

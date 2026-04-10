@@ -1,8 +1,8 @@
 import type { Locale, MessageCatalog } from "@orar/locales"
 
 const catalogLoaders: Record<Locale, () => Promise<{ default: MessageCatalog }>> = {
-	en: () => import("@orar/locales/catalogs/en.ts" as string) as Promise<{ default: MessageCatalog }>,
-	ro: () => import("@orar/locales/catalogs/ro.ts" as string) as Promise<{ default: MessageCatalog }>,
+	en: () => import("@orar/locales/catalogs/en" as string) as Promise<{ default: MessageCatalog }>,
+	ro: () => import("@orar/locales/catalogs/ro" as string) as Promise<{ default: MessageCatalog }>,
 }
 
 const catalogCache = new Map<Locale, MessageCatalog>()
