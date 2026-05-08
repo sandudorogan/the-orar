@@ -62,17 +62,41 @@ export const ORAR_CSV_COLUMNS = [
 
 export const ORAR_CSV_HEADER = ORAR_CSV_COLUMNS.join(",")
 
-export const ORAR_CSV_AI_PROMPT = `Convert the attached or pasted scheduling data to Orar CSV v1.
+export const ORAR_CSV_AI_PROMPT = `Convert the attached or pasted school timetable data into Orar CSV v1.
 
-Return only CSV, no Markdown, no explanations, no code fences.
-Use this exact header:
+Random Excel files are expected. The source may have multiple sheets, merged headers, Romanian or English labels, teacher initials, room names, weekly lesson counts, availability tables, or an already-created timetable. Infer the structure carefully, but output only valid Orar CSV.
+
+Return only CSV, no Markdown, no explanations, no code fences. Use this exact header:
 ${ORAR_CSV_HEADER}
 
-Preserve all classes, groups, teachers, rooms, activities, availability, and relationships.
-Use stable readable keys like class_9a, teacher_popescu, room_lab1.
-Use zero-based period indexes in time_slots and assignments.
-Leave unknown optional fields empty.
-Never invent schedule assignments unless the source file contains an explicit timetable.`
+General conversion rules:
+- Preserve every class/cohort, class group/subgroup, teacher, room, activity/subject requirement, availability rule, and explicit timetable placement found in the source.
+- Use stable readable keys, lowercase snake_case, unique inside each record_type: class_9a, group_9a_all, teacher_popescu_ana, room_lab1, activity_math_9a.
+- Do not use display names as references. Relationship columns must use keys created in this same CSV.
+- Use | to separate multiple values inside one cell. Do not use commas inside list cells.
+- Leave unknown optional fields empty. Do not guess emails, buildings, capacity, workload limits, or room tags unless present or clearly implied.
+- Normalize Romanian/English day names to: monday, tuesday, wednesday, thursday, friday, saturday, sunday.
+- Period indexes are zero-based. If a spreadsheet labels periods 1..7, output 0..6.
+- Numeric columns must contain only integers. Boolean assignment_locked must be true or false.
+- If a cell needs commas, quotes, or line breaks, escape it as RFC 4180 CSV.
+
+Record type schema:
+- project: one row. key required. name = institution/project name. kind = school or university.
+- calendar: one row. active_days = monday|tuesday|...; periods_per_day integer; period_duration_minutes integer; start_time HH:MM.
+- class: one row per cohort/class. key, name, short_name required. year and student_count optional.
+- group: one row per subgroup. key, name, short_name, parent_key required. parent_key references a class key. If the source has no subgroups, create one all-students group per class, such as group_9a_all.
+- teacher: one row per teacher. key, name, short_name required. email, max_hours_per_day, max_hours_per_week optional.
+- classroom: one row per room. key, name, short_name required. capacity, building, tags optional. tags use values like lab|sports|computer.
+- activity: one row per scheduling demand. key, name, subject, teacher_keys, class_group_keys, duration, total_per_week required. teacher_keys references teacher rows. class_group_keys references group rows. preferred_room_keys references classroom rows. room_tags lists acceptable tags. split_parts is optional, such as 1|1|1 or 2|1.
+- availability: one row per unavailable/preferred rule. availability_target_type is teacher, class, classGroup, or classroom. availability_target_key references the matching key type. availability_type is unavailable or preferred. time_slots uses day:zero_based_period values, such as monday:0|monday:1.
+- assignment: assignment rows only if the source contains an actual timetable with placed lessons. assignment_activity_key references an activity key. assignment_day and assignment_period are required. assignment_room_key references a classroom key if known. assignment_locked should be true for imported timetable placements. assignment_duration should match the placed activity duration.
+- solver: optional metadata only if present in the source; otherwise omit.
+
+Activity extraction rules:
+- A subject taught to two classes is usually two activity rows, one per class/group, unless the source clearly says they meet together.
+- If a teacher teaches multiple groups for the same subject, keep all referenced group keys in class_group_keys only when the lesson is joint.
+- total_per_week is the number of weekly occurrences or hours from the curriculum table. duration is periods per occurrence; use 1 unless a double period or block is explicitly shown.
+- Never invent schedule assignments unless the source file contains an explicit timetable. If the file only contains curriculum, teachers, rooms, or constraints, output no assignment rows.`
 
 export type OrarCsvRecordType =
 	| "project"
