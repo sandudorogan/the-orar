@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /classes
+Disallow: /teachers
+Disallow: /classrooms
+Disallow: /activities
+Disallow: /constraints
+Disallow: /generate
+Disallow: /timetables
+Disallow: /exports
+Disallow: /settings
+
+Sitemap: https://sandudorogan.github.io/the-orar/sitemap.xml

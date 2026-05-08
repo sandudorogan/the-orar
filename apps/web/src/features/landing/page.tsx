@@ -8,7 +8,7 @@ import { LandingHeader } from "./components/landing-header.tsx"
 
 export function LandingPage() {
 	return (
-		<div className="min-h-screen bg-surface-page">
+		<main className="min-h-screen bg-surface-page">
 			<LandingHeader />
 			<HeroSection />
 			<FeaturesSection />
@@ -16,6 +16,6 @@ export function LandingPage() {
 			<HighlightsSection />
 			<CtaSection />
 			<LandingFooter />
-		</div>
+		</main>
 	)
 }

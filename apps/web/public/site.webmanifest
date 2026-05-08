@@ -1,0 +1,17 @@
+{
+	"name": "Orar — School Scheduling",
+	"short_name": "Orar",
+	"description": "Build conflict-free timetables for your school or university, entirely in your browser.",
+	"start_url": "/the-orar/dashboard",
+	"scope": "/the-orar/",
+	"display": "standalone",
+	"background_color": "#fafaf9",
+	"theme_color": "#1e4d78",
+	"icons": [
+		{
+			"src": "favicon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml"
+		}
+	]
+}
