@@ -9,13 +9,19 @@ export interface GenerationResult {
 	totalCount: number
 }
 
+export interface GenerationOptions {
+	seed?: number
+}
+
 export function generate(
 	problem: PreparedProblem,
 	onProgress?: (placed: number, total: number) => void,
 	shouldCancel?: () => boolean,
+	options: GenerationOptions = {},
 ): GenerationResult {
 	const total = problem.activities.length
 	const assignments: Assignment[] = []
+	const random = options.seed === undefined ? Math.random : createSeededRandom(options.seed)
 
 	const teacherSlotUsed = new Map<string, Set<string>>()
 	const groupSlotUsed = new Map<string, Set<string>>()
@@ -27,7 +33,7 @@ export function generate(
 	for (const prepared of problem.activities) {
 		if (shouldCancel?.()) break
 
-		const slot = pickBestSlot(prepared, teacherSlotUsed, groupSlotUsed, roomSlotUsed)
+		const slot = pickBestSlot(prepared, teacherSlotUsed, groupSlotUsed, roomSlotUsed, random)
 		if (!slot) {
 			softPenalty += 100
 			continue
@@ -74,6 +80,7 @@ function pickBestSlot(
 	teacherUsed: Map<string, Set<string>>,
 	groupUsed: Map<string, Set<string>>,
 	roomUsed: Map<string, Set<string>>,
+	random: () => number,
 ): TimeSlot | null {
 	const candidates = prepared.availableSlots.filter((slot) => {
 		const spanKeys = timeSlotKeysForSpan(slot, prepared.duration)
@@ -108,7 +115,7 @@ function pickBestSlot(
 	scored.sort((a, b) => b.score - a.score)
 
 	const topN = Math.min(3, scored.length)
-	const pick = Math.floor(Math.random() * topN)
+	const pick = Math.floor(random() * topN)
 	return scored[pick]!.slot
 }
 
@@ -142,4 +149,12 @@ function countUsedNeighbors(
 		if (used.has(next)) count++
 	}
 	return count
+}
+
+function createSeededRandom(seed: number): () => number {
+	let state = seed >>> 0
+	return () => {
+		state = (Math.imul(state, 1664525) + 1013904223) >>> 0
+		return state / 0x100000000
+	}
 }

@@ -82,7 +82,7 @@ interface ProjectContextValue {
 	updateAvailabilityRule: (id: string, data: Partial<Omit<AvailabilityRule, "id">>) => void
 	deleteAvailabilityRule: (id: string) => void
 
-	replaceProject: (project: ScheduleProject) => void
+	replaceProject: (project: ScheduleProject, assignments?: Assignment[]) => void
 }
 
 const ProjectContext = createContext<ProjectContextValue | null>(null)
@@ -330,10 +330,15 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 		[project],
 	)
 
-	const replaceProject = useCallback((newProject: ScheduleProject) => {
-		setProject(newProject)
-		saveProject(newProject)
-	}, [])
+	const replaceProject = useCallback(
+		(newProject: ScheduleProject, nextAssignments?: Assignment[]) => {
+			setProject(newProject)
+			setAssignments(nextAssignments ?? [])
+			saveProject(newProject)
+			saveAssignments(newProject.id, nextAssignments ?? [])
+		},
+		[],
+	)
 
 	if (isLoading || !project) {
 		return null

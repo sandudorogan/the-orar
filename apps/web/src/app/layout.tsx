@@ -9,6 +9,7 @@ import {
 	CalendarDays,
 	DoorOpen,
 	FileDown,
+	FileUp,
 	Globe,
 	GraduationCap,
 	LayoutDashboard,
@@ -38,6 +39,7 @@ const navItems: NavItem[] = [
 	{ path: "/generate", labelKey: "generate", icon: <Zap className="h-5 w-5" /> },
 	{ path: "/timetables", labelKey: "timetables", icon: <CalendarDays className="h-5 w-5" /> },
 	{ path: "/exports", labelKey: "exports", icon: <FileDown className="h-5 w-5" /> },
+	{ path: "/import", labelKey: "import", icon: <FileUp className="h-5 w-5" /> },
 	{ path: "/settings", labelKey: "settings", icon: <Settings className="h-5 w-5" /> },
 ]
 

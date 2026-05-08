@@ -51,6 +51,7 @@ self.onmessage = (event: MessageEvent<SolverRequest>) => {
 					})
 				},
 				() => cancelled,
+				{ seed: config.seed === undefined ? undefined : config.seed + attempt },
 			)
 
 			if (result.fitness > bestResult.fitness) {

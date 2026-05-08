@@ -4,6 +4,7 @@ import { ClassroomsPage } from "@/features/classrooms/page.tsx"
 import { ConstraintsPage } from "@/features/constraints/page.tsx"
 import { DashboardPage } from "@/features/dashboard/page.tsx"
 import { GeneratePage } from "@/features/generate/page.tsx"
+import { ImportPage } from "@/features/import/page.tsx"
 import { SettingsPage } from "@/features/settings/page.tsx"
 import { TeachersPage } from "@/features/teachers/page.tsx"
 import { TimetablesPage } from "@/features/timetables/page.tsx"
@@ -90,6 +91,15 @@ const exportsRoute = createRoute({
 	component: lazyRouteComponent(() => import("@/features/exports/page.tsx"), "ExportsPage"),
 })
 
+const importRoute = createRoute({
+	getParentRoute: () => appLayoutRoute,
+	path: "/import",
+	component: ImportPage,
+	beforeLoad: () => {
+		document.title = "Import | Orar"
+	},
+})
+
 const settingsRoute = createRoute({
 	getParentRoute: () => appLayoutRoute,
 	path: "/settings",
@@ -108,6 +118,7 @@ const routeTree = rootRoute.addChildren([
 		generateRoute,
 		timetablesRoute,
 		exportsRoute,
+		importRoute,
 		settingsRoute,
 	]),
 ])

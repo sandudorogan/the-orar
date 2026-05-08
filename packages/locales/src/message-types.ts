@@ -35,6 +35,7 @@ export interface MessageCatalog {
 		generate: string
 		timetables: string
 		exports: string
+		import: string
 		settings: string
 	}
 	entities: {
@@ -163,10 +164,38 @@ export interface MessageCatalog {
 	exports: {
 		exportDocx: string
 		exportExcel: string
+		exportOrarCsv: string
 		perTeacher: string
 		perClass: string
 		perClassroom: string
 		institutionPack: string
+	}
+	importCsv: {
+		title: string
+		description: string
+		dropTitle: string
+		dropDescription: string
+		selectFile: string
+		pasteLabel: string
+		validate: string
+		copyPrompt: string
+		promptCopied: string
+		formatTitle: string
+		invalidTitle: string
+		invalidDescription: string
+		previewTitle: string
+		replaceProject: string
+		replaceWarning: string
+		imported: string
+		warnings: string
+		errors: string
+		classes: string
+		groups: string
+		teachers: string
+		classrooms: string
+		activities: string
+		availability: string
+		assignments: string
 	}
 	settings: {
 		language: string

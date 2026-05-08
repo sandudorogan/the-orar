@@ -219,6 +219,40 @@ describe("Generation", () => {
 		})
 		expect(result.placedCount).toBeLessThan(result.totalCount)
 	})
+
+	it("produces identical assignments for the same seed", () => {
+		const project = buildSmallSchool()
+		const problem = prepareProblem(
+			project.calendar,
+			project.activities,
+			project.teachers,
+			project.classGroups,
+			project.classrooms,
+			project.availabilityRules,
+		)
+
+		const first = generate(problem, undefined, undefined, { seed: 1234 })
+		const second = generate(problem, undefined, undefined, { seed: 1234 })
+
+		expect(second.assignments).toEqual(first.assignments)
+	})
+
+	it("still supports unseeded generation", () => {
+		const project = buildSmallSchool()
+		const problem = prepareProblem(
+			project.calendar,
+			project.activities,
+			project.teachers,
+			project.classGroups,
+			project.classrooms,
+			project.availabilityRules,
+		)
+
+		const result = generate(problem, undefined, undefined, {})
+
+		expect(result.placedCount).toBe(result.totalCount)
+		expect(result.assignments.length).toBe(result.totalCount)
+	})
 })
 
 describe("Fitness scoring", () => {

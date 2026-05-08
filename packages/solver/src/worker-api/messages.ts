@@ -15,6 +15,7 @@ export interface SolverConfig {
 	maxAttempts: number
 	timeoutMs: number
 	reportIntervalMs: number
+	seed?: number
 }
 
 export const DEFAULT_SOLVER_CONFIG: SolverConfig = {

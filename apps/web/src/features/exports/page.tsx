@@ -1,5 +1,6 @@
 import { useLocale, useMessages } from "@/app/i18n/use-i18n.ts"
 import { useProject } from "@/app/project-context.tsx"
+import { exportProjectToOrarCsv } from "@orar/domain"
 import {
 	Button,
 	Card,
@@ -167,6 +168,15 @@ export function ExportsPage() {
 
 	const hasSchedule = assignments.length > 0
 
+	function handleCsvExport() {
+		if (!assignments.length) return
+		const csv = exportProjectToOrarCsv(project, assignments)
+		downloadBlob(
+			new Blob([csv], { type: "text/csv;charset=utf-8" }),
+			`${project.name.replace(/\s+/g, "-").toLowerCase()}-orar.csv`,
+		)
+	}
+
 	return (
 		<div className="space-y-6">
 			<h1 className="text-2xl font-bold text-text-primary">{messages.nav.exports}</h1>
@@ -180,83 +190,94 @@ export function ExportsPage() {
 			)}
 
 			{hasSchedule && (
-				<Tabs defaultValue="teacher">
-					<TabsList>
-						<TabsTrigger value="teacher">{messages.exports.perTeacher}</TabsTrigger>
-						<TabsTrigger value="class">{messages.exports.perClass}</TabsTrigger>
-						<TabsTrigger value="classroom">{messages.exports.perClassroom}</TabsTrigger>
-						<TabsTrigger value="institution">{messages.exports.institutionPack}</TabsTrigger>
-					</TabsList>
+				<div className="space-y-4">
+					<Card>
+						<CardContent className="flex flex-wrap gap-3 py-4">
+							<Button variant="outline" onClick={handleCsvExport}>
+								<FileDown className="h-4 w-4" />
+								{messages.exports.exportOrarCsv}
+							</Button>
+						</CardContent>
+					</Card>
 
-					<TabsContent value="teacher">
-						<ExportCard
-							title={messages.exports.perTeacher}
-							description={`${project.teachers.length} ${messages.nav.teachers.toLowerCase()}`}
-							exporting={exporting}
-							onDocx={() => handleExport("teacher", "docx")}
-							onExcel={() => handleExport("teacher", "excel")}
-							messages={messages}
-						/>
-					</TabsContent>
+					<Tabs defaultValue="teacher">
+						<TabsList>
+							<TabsTrigger value="teacher">{messages.exports.perTeacher}</TabsTrigger>
+							<TabsTrigger value="class">{messages.exports.perClass}</TabsTrigger>
+							<TabsTrigger value="classroom">{messages.exports.perClassroom}</TabsTrigger>
+							<TabsTrigger value="institution">{messages.exports.institutionPack}</TabsTrigger>
+						</TabsList>
 
-					<TabsContent value="class">
-						<ExportCard
-							title={messages.exports.perClass}
-							description={`${project.classGroups.length} ${messages.nav.classes.toLowerCase()}`}
-							exporting={exporting}
-							onDocx={() => handleExport("class", "docx")}
-							onExcel={() => handleExport("class", "excel")}
-							messages={messages}
-						/>
-					</TabsContent>
+						<TabsContent value="teacher">
+							<ExportCard
+								title={messages.exports.perTeacher}
+								description={`${project.teachers.length} ${messages.nav.teachers.toLowerCase()}`}
+								exporting={exporting}
+								onDocx={() => handleExport("teacher", "docx")}
+								onExcel={() => handleExport("teacher", "excel")}
+								messages={messages}
+							/>
+						</TabsContent>
 
-					<TabsContent value="classroom">
-						<ExportCard
-							title={messages.exports.perClassroom}
-							description={`${project.classrooms.length} ${messages.nav.classrooms.toLowerCase()}`}
-							exporting={exporting}
-							onDocx={() => handleExport("classroom", "docx")}
-							onExcel={() => handleExport("classroom", "excel")}
-							messages={messages}
-						/>
-					</TabsContent>
+						<TabsContent value="class">
+							<ExportCard
+								title={messages.exports.perClass}
+								description={`${project.classGroups.length} ${messages.nav.classes.toLowerCase()}`}
+								exporting={exporting}
+								onDocx={() => handleExport("class", "docx")}
+								onExcel={() => handleExport("class", "excel")}
+								messages={messages}
+							/>
+						</TabsContent>
 
-					<TabsContent value="institution">
-						<Card>
-							<CardHeader>
-								<CardTitle className="flex items-center gap-2">
-									<Package className="h-5 w-5" />
-									{messages.exports.institutionPack}
-								</CardTitle>
-								<CardDescription>
-									{messages.nav.teachers}, {messages.nav.classes}, {messages.nav.classrooms}
-								</CardDescription>
-							</CardHeader>
-							<CardContent className="flex gap-3">
-								<Button onClick={() => handleInstitutionPack("docx")} disabled={exporting}>
-									{exporting ? (
-										<Loader2 className="h-4 w-4 animate-spin" />
-									) : (
-										<FileText className="h-4 w-4" />
-									)}
-									{messages.exports.exportDocx}
-								</Button>
-								<Button
-									variant="outline"
-									onClick={() => handleInstitutionPack("excel")}
-									disabled={exporting}
-								>
-									{exporting ? (
-										<Loader2 className="h-4 w-4 animate-spin" />
-									) : (
-										<FileSpreadsheet className="h-4 w-4" />
-									)}
-									{messages.exports.exportExcel}
-								</Button>
-							</CardContent>
-						</Card>
-					</TabsContent>
-				</Tabs>
+						<TabsContent value="classroom">
+							<ExportCard
+								title={messages.exports.perClassroom}
+								description={`${project.classrooms.length} ${messages.nav.classrooms.toLowerCase()}`}
+								exporting={exporting}
+								onDocx={() => handleExport("classroom", "docx")}
+								onExcel={() => handleExport("classroom", "excel")}
+								messages={messages}
+							/>
+						</TabsContent>
+
+						<TabsContent value="institution">
+							<Card>
+								<CardHeader>
+									<CardTitle className="flex items-center gap-2">
+										<Package className="h-5 w-5" />
+										{messages.exports.institutionPack}
+									</CardTitle>
+									<CardDescription>
+										{messages.nav.teachers}, {messages.nav.classes}, {messages.nav.classrooms}
+									</CardDescription>
+								</CardHeader>
+								<CardContent className="flex gap-3">
+									<Button onClick={() => handleInstitutionPack("docx")} disabled={exporting}>
+										{exporting ? (
+											<Loader2 className="h-4 w-4 animate-spin" />
+										) : (
+											<FileText className="h-4 w-4" />
+										)}
+										{messages.exports.exportDocx}
+									</Button>
+									<Button
+										variant="outline"
+										onClick={() => handleInstitutionPack("excel")}
+										disabled={exporting}
+									>
+										{exporting ? (
+											<Loader2 className="h-4 w-4 animate-spin" />
+										) : (
+											<FileSpreadsheet className="h-4 w-4" />
+										)}
+										{messages.exports.exportExcel}
+									</Button>
+								</CardContent>
+							</Card>
+						</TabsContent>
+					</Tabs>
+				</div>
 			)}
 		</div>
 	)
