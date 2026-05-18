@@ -19,11 +19,12 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
+	cn,
 } from "@orar/ui"
 import { Pencil, Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
 
-export function ClassroomsPage() {
+export function ClassroomsPanel({ embedded = false }: { embedded?: boolean }) {
 	const messages = useMessages()
 	const { project, addClassroom, updateClassroom, deleteClassroom } = useProject()
 	const [dialogOpen, setDialogOpen] = useState(false)
@@ -67,8 +68,10 @@ export function ClassroomsPage() {
 
 	return (
 		<div className="space-y-6">
-			<div className="flex items-center justify-between">
-				<h1 className="text-2xl font-bold text-text-primary">{messages.classrooms.title}</h1>
+			<div className={cn("flex items-center gap-4", embedded ? "justify-end" : "justify-between")}>
+				{!embedded && (
+					<h1 className="text-2xl font-bold text-text-primary">{messages.classrooms.title}</h1>
+				)}
 				<Dialog
 					open={dialogOpen}
 					onOpenChange={(open) => {
@@ -221,4 +224,8 @@ export function ClassroomsPage() {
 			</Card>
 		</div>
 	)
+}
+
+export function ClassroomsPage() {
+	return <ClassroomsPanel />
 }

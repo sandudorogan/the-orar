@@ -19,11 +19,12 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
+	cn,
 } from "@orar/ui"
 import { Pencil, Plus, Trash2 } from "lucide-react"
 import { useRef, useState } from "react"
 
-export function ActivitiesPage() {
+export function ActivitiesPanel({ embedded = false }: { embedded?: boolean }) {
 	const messages = useMessages()
 	const { project, addActivity, updateActivity, deleteActivity } = useProject()
 	const [dialogOpen, setDialogOpen] = useState(false)
@@ -112,8 +113,10 @@ export function ActivitiesPage() {
 
 	return (
 		<div className="space-y-6">
-			<div className="flex items-center justify-between">
-				<h1 className="text-2xl font-bold text-text-primary">{messages.activities.title}</h1>
+			<div className={cn("flex items-center gap-4", embedded ? "justify-end" : "justify-between")}>
+				{!embedded && (
+					<h1 className="text-2xl font-bold text-text-primary">{messages.activities.title}</h1>
+				)}
 				<Dialog
 					open={dialogOpen}
 					onOpenChange={(open) => {
@@ -334,4 +337,8 @@ export function ActivitiesPage() {
 			</Card>
 		</div>
 	)
+}
+
+export function ActivitiesPage() {
+	return <ActivitiesPanel />
 }

@@ -5,19 +5,14 @@ import { cn } from "@orar/ui"
 import { ScrollArea } from "@orar/ui"
 import { Link, useMatchRoute } from "@tanstack/react-router"
 import {
-	BookOpen,
 	CalendarDays,
-	DoorOpen,
 	FileDown,
-	FileUp,
 	Globe,
-	GraduationCap,
 	LayoutDashboard,
+	ListChecks,
 	PanelLeft,
 	PanelLeftClose,
 	Settings,
-	ShieldCheck,
-	Users,
 	Zap,
 } from "lucide-react"
 import type { ReactNode } from "react"
@@ -31,15 +26,10 @@ interface NavItem {
 
 const navItems: NavItem[] = [
 	{ path: "/dashboard", labelKey: "dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
-	{ path: "/classes", labelKey: "classes", icon: <GraduationCap className="h-5 w-5" /> },
-	{ path: "/teachers", labelKey: "teachers", icon: <Users className="h-5 w-5" /> },
-	{ path: "/classrooms", labelKey: "classrooms", icon: <DoorOpen className="h-5 w-5" /> },
-	{ path: "/activities", labelKey: "activities", icon: <BookOpen className="h-5 w-5" /> },
-	{ path: "/constraints", labelKey: "constraints", icon: <ShieldCheck className="h-5 w-5" /> },
+	{ path: "/setup", labelKey: "setup", icon: <ListChecks className="h-5 w-5" /> },
 	{ path: "/generate", labelKey: "generate", icon: <Zap className="h-5 w-5" /> },
 	{ path: "/timetables", labelKey: "timetables", icon: <CalendarDays className="h-5 w-5" /> },
 	{ path: "/exports", labelKey: "exports", icon: <FileDown className="h-5 w-5" /> },
-	{ path: "/import", labelKey: "import", icon: <FileUp className="h-5 w-5" /> },
 	{ path: "/settings", labelKey: "settings", icon: <Settings className="h-5 w-5" /> },
 ]
 
@@ -74,7 +64,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
 				<ScrollArea className="flex-1">
 					<nav className="flex flex-col gap-1 p-2">
 						{navItems.map((item) => {
-							const isActive = matchRoute({ to: item.path, fuzzy: item.path !== "/dashboard" })
+							const isActive = matchRoute({
+								to: item.path,
+								fuzzy: item.path !== "/dashboard" && item.path !== "/setup",
+							})
 
 							return (
 								<Link

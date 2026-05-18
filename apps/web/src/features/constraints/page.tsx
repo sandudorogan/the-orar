@@ -27,6 +27,7 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
+	cn,
 } from "@orar/ui"
 import { Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
@@ -41,7 +42,7 @@ const DAY_LABELS: Record<string, string> = {
 	sunday: "Sun",
 }
 
-export function ConstraintsPage() {
+export function ConstraintsPanel({ embedded = false }: { embedded?: boolean }) {
 	const messages = useMessages()
 	const { project, addAvailabilityRule, deleteAvailabilityRule } = useProject()
 	const [dialogOpen, setDialogOpen] = useState(false)
@@ -116,8 +117,10 @@ export function ConstraintsPage() {
 
 	return (
 		<div className="space-y-6">
-			<div className="flex items-center justify-between">
-				<h1 className="text-2xl font-bold text-text-primary">{messages.constraints.title}</h1>
+			<div className={cn("flex items-center gap-4", embedded ? "justify-end" : "justify-between")}>
+				{!embedded && (
+					<h1 className="text-2xl font-bold text-text-primary">{messages.constraints.title}</h1>
+				)}
 				<Dialog
 					open={dialogOpen}
 					onOpenChange={(open) => {
@@ -410,4 +413,8 @@ function AvailabilityGrid({
 			</CardContent>
 		</Card>
 	)
+}
+
+export function ConstraintsPage() {
+	return <ConstraintsPanel />
 }

@@ -21,11 +21,12 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
+	cn,
 } from "@orar/ui"
 import { Pencil, Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
 
-export function ClassesPage() {
+export function ClassesPanel({ embedded = false }: { embedded?: boolean }) {
 	const messages = useMessages()
 	const {
 		project,
@@ -111,8 +112,10 @@ export function ClassesPage() {
 
 	return (
 		<div className="space-y-6">
-			<div className="flex items-center justify-between">
-				<h1 className="text-2xl font-bold text-text-primary">{messages.classes.title}</h1>
+			<div className={cn("flex items-center gap-4", embedded ? "justify-end" : "justify-between")}>
+				{!embedded && (
+					<h1 className="text-2xl font-bold text-text-primary">{messages.classes.title}</h1>
+				)}
 				<Dialog
 					open={classDialogOpen}
 					onOpenChange={(open) => {
@@ -381,4 +384,8 @@ export function ClassesPage() {
 			</Card>
 		</div>
 	)
+}
+
+export function ClassesPage() {
+	return <ClassesPanel />
 }

@@ -29,6 +29,7 @@ const ro: MessageCatalog = {
 	},
 	nav: {
 		dashboard: "Panou",
+		setup: "Configurare proiect",
 		classes: "Clase",
 		teachers: "Profesori",
 		classrooms: "Săli de clasă",
@@ -49,6 +50,20 @@ const ro: MessageCatalog = {
 		activity: "Activitate",
 		schedule: "Orar",
 		timeSlot: "Interval orar",
+	},
+	setup: {
+		title: "Configurare proiect",
+		description:
+			"Adaugă clase, profesori, săli, activități și reguli de disponibilitate într-un singur loc. Poți importa în masă din CSV.",
+		progressTitle: "Progres configurare",
+		progressDescription: "Completează pașii obligatorii înainte de generarea orarului.",
+		readyDescription: "Datele obligatorii sunt complete. Poți rafina detaliile sau genera orarul.",
+		stepComplete: "Complet",
+		stepIncomplete: "Lipsesc date",
+		optionalStep: "Opțional",
+		generateCta: "Generează orarul",
+		continueSetup: "Continuă configurarea",
+		manageProject: "Editează datele proiectului",
 	},
 	dashboard: {
 		projectOverview: "Sumar proiect",

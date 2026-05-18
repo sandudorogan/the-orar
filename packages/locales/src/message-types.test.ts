@@ -32,6 +32,7 @@ describe("message-types", () => {
 			},
 			nav: {
 				dashboard: "Dashboard",
+				setup: "Project setup",
 				classes: "Classes",
 				teachers: "Teachers",
 				classrooms: "Classrooms",
@@ -52,6 +53,19 @@ describe("message-types", () => {
 				activity: "Activity",
 				schedule: "Schedule",
 				timeSlot: "Time Slot",
+			},
+			setup: {
+				title: "Project setup",
+				description: "Setup description",
+				progressTitle: "Progress",
+				progressDescription: "Progress description",
+				readyDescription: "Ready",
+				stepComplete: "Complete",
+				stepIncomplete: "Incomplete",
+				optionalStep: "Optional",
+				generateCta: "Generate",
+				continueSetup: "Continue",
+				manageProject: "Manage",
 			},
 			dashboard: {
 				projectOverview: "Project Overview",

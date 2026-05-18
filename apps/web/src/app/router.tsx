@@ -1,12 +1,8 @@
-import { ActivitiesPage } from "@/features/activities/page.tsx"
-import { ClassesPage } from "@/features/classes/page.tsx"
-import { ClassroomsPage } from "@/features/classrooms/page.tsx"
-import { ConstraintsPage } from "@/features/constraints/page.tsx"
 import { DashboardPage } from "@/features/dashboard/page.tsx"
 import { GeneratePage } from "@/features/generate/page.tsx"
-import { ImportPage } from "@/features/import/page.tsx"
 import { SettingsPage } from "@/features/settings/page.tsx"
-import { TeachersPage } from "@/features/teachers/page.tsx"
+import { SetupPage } from "@/features/setup/page.tsx"
+import { type SetupTab, parseSetupTab } from "@/features/setup/setup-tabs.ts"
 import { TimetablesPage } from "@/features/timetables/page.tsx"
 import {
 	Link,
@@ -15,6 +11,7 @@ import {
 	createRoute,
 	createRouter,
 	lazyRouteComponent,
+	redirect,
 } from "@tanstack/react-router"
 import { AppLayout } from "./layout.tsx"
 
@@ -37,6 +34,12 @@ function NotFound() {
 			</div>
 		</div>
 	)
+}
+
+function redirectToSetupTab(tab: SetupTab) {
+	return () => {
+		throw redirect({ to: "/setup", search: { tab } })
+	}
 }
 
 const rootRoute = createRootRoute({
@@ -72,49 +75,52 @@ const dashboardRoute = createRoute({
 	},
 })
 
+const setupRoute = createRoute({
+	getParentRoute: () => appLayoutRoute,
+	path: "/setup",
+	validateSearch: (search: Record<string, unknown>) => ({
+		tab: parseSetupTab(search.tab),
+	}),
+	component: SetupPage,
+	beforeLoad: () => {
+		document.title = "Project setup | Orar"
+	},
+})
+
 const classesRoute = createRoute({
 	getParentRoute: () => appLayoutRoute,
 	path: "/classes",
-	component: ClassesPage,
-	beforeLoad: () => {
-		document.title = "Classes | Orar"
-	},
+	beforeLoad: redirectToSetupTab("classes"),
 })
 
 const teachersRoute = createRoute({
 	getParentRoute: () => appLayoutRoute,
 	path: "/teachers",
-	component: TeachersPage,
-	beforeLoad: () => {
-		document.title = "Teachers | Orar"
-	},
+	beforeLoad: redirectToSetupTab("teachers"),
 })
 
 const classroomsRoute = createRoute({
 	getParentRoute: () => appLayoutRoute,
 	path: "/classrooms",
-	component: ClassroomsPage,
-	beforeLoad: () => {
-		document.title = "Classrooms | Orar"
-	},
+	beforeLoad: redirectToSetupTab("classrooms"),
 })
 
 const activitiesRoute = createRoute({
 	getParentRoute: () => appLayoutRoute,
 	path: "/activities",
-	component: ActivitiesPage,
-	beforeLoad: () => {
-		document.title = "Activities | Orar"
-	},
+	beforeLoad: redirectToSetupTab("activities"),
 })
 
 const constraintsRoute = createRoute({
 	getParentRoute: () => appLayoutRoute,
 	path: "/constraints",
-	component: ConstraintsPage,
-	beforeLoad: () => {
-		document.title = "Constraints | Orar"
-	},
+	beforeLoad: redirectToSetupTab("constraints"),
+})
+
+const importRoute = createRoute({
+	getParentRoute: () => appLayoutRoute,
+	path: "/import",
+	beforeLoad: redirectToSetupTab("import"),
 })
 
 const generateRoute = createRoute({
@@ -144,15 +150,6 @@ const exportsRoute = createRoute({
 	},
 })
 
-const importRoute = createRoute({
-	getParentRoute: () => appLayoutRoute,
-	path: "/import",
-	component: ImportPage,
-	beforeLoad: () => {
-		document.title = "Import | Orar"
-	},
-})
-
 const settingsRoute = createRoute({
 	getParentRoute: () => appLayoutRoute,
 	path: "/settings",
@@ -166,15 +163,16 @@ const routeTree = rootRoute.addChildren([
 	landingRoute,
 	appLayoutRoute.addChildren([
 		dashboardRoute,
+		setupRoute,
 		classesRoute,
 		teachersRoute,
 		classroomsRoute,
 		activitiesRoute,
 		constraintsRoute,
+		importRoute,
 		generateRoute,
 		timetablesRoute,
 		exportsRoute,
-		importRoute,
 		settingsRoute,
 	]),
 ])

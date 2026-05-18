@@ -27,6 +27,7 @@ export interface MessageCatalog {
 	}
 	nav: {
 		dashboard: string
+		setup: string
 		classes: string
 		teachers: string
 		classrooms: string
@@ -47,6 +48,19 @@ export interface MessageCatalog {
 		activity: string
 		schedule: string
 		timeSlot: string
+	}
+	setup: {
+		title: string
+		description: string
+		progressTitle: string
+		progressDescription: string
+		readyDescription: string
+		stepComplete: string
+		stepIncomplete: string
+		optionalStep: string
+		generateCta: string
+		continueSetup: string
+		manageProject: string
 	}
 	dashboard: {
 		projectOverview: string

@@ -2,12 +2,20 @@ import { useMessages } from "@/app/i18n/use-i18n.ts"
 import { useProject } from "@/app/project-context.tsx"
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@orar/ui"
 import { useNavigate } from "@tanstack/react-router"
-import { BookOpen, DoorOpen, GraduationCap, Plus, ShieldCheck, Users } from "lucide-react"
+import { BookOpen, DoorOpen, GraduationCap, ListChecks, ShieldCheck, Users } from "lucide-react"
 
 export function DashboardPage() {
 	const messages = useMessages()
 	const { project } = useProject()
 	const navigate = useNavigate()
+
+	const hasClassGroups = project.classGroups.length > 0
+	const setupReady =
+		project.classes.length > 0 &&
+		hasClassGroups &&
+		project.teachers.length > 0 &&
+		project.classrooms.length > 0 &&
+		project.activities.length > 0
 
 	const stats = [
 		{
@@ -37,13 +45,6 @@ export function DashboardPage() {
 		},
 	]
 
-	const quickActions = [
-		{ label: messages.dashboard.addClass, path: "/classes" as const },
-		{ label: messages.dashboard.addTeacher, path: "/teachers" as const },
-		{ label: messages.dashboard.addClassroom, path: "/classrooms" as const },
-		{ label: messages.dashboard.addActivity, path: "/activities" as const },
-	]
-
 	return (
 		<div className="space-y-6">
 			<div>
@@ -56,7 +57,7 @@ export function DashboardPage() {
 					<CardTitle>{messages.dashboard.projectOverview}</CardTitle>
 					<CardDescription>{project.institution.name}</CardDescription>
 				</CardHeader>
-				<CardContent>
+				<CardContent className="space-y-4">
 					<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
 						{stats.map((stat) => (
 							<div
@@ -69,26 +70,10 @@ export function DashboardPage() {
 							</div>
 						))}
 					</div>
-				</CardContent>
-			</Card>
-
-			<Card>
-				<CardHeader>
-					<CardTitle>{messages.common.quickActions}</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className="flex flex-wrap gap-3">
-						{quickActions.map((action) => (
-							<Button
-								key={action.path}
-								variant="outline"
-								onClick={() => navigate({ to: action.path })}
-							>
-								<Plus className="h-4 w-4" />
-								{action.label}
-							</Button>
-						))}
-					</div>
+					<Button onClick={() => navigate({ to: "/setup", search: { tab: "classes" } })}>
+						<ListChecks className="h-4 w-4" />
+						{setupReady ? messages.setup.manageProject : messages.setup.continueSetup}
+					</Button>
 				</CardContent>
 			</Card>
 		</div>

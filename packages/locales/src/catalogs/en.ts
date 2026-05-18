@@ -29,6 +29,7 @@ const en: MessageCatalog = {
 	},
 	nav: {
 		dashboard: "Dashboard",
+		setup: "Project setup",
 		classes: "Classes",
 		teachers: "Teachers",
 		classrooms: "Classrooms",
@@ -49,6 +50,20 @@ const en: MessageCatalog = {
 		activity: "Activity",
 		schedule: "Schedule",
 		timeSlot: "Time Slot",
+	},
+	setup: {
+		title: "Project setup",
+		description:
+			"Add classes, teachers, rooms, activities, and availability rules in one place. You can also bulk-import from CSV.",
+		progressTitle: "Setup progress",
+		progressDescription: "Complete the required steps before generating a timetable.",
+		readyDescription: "Required data is in place. You can refine details or generate a timetable.",
+		stepComplete: "Complete",
+		stepIncomplete: "Needs data",
+		optionalStep: "Optional",
+		generateCta: "Generate timetable",
+		continueSetup: "Continue project setup",
+		manageProject: "Edit project data",
 	},
 	dashboard: {
 		projectOverview: "Project Overview",
