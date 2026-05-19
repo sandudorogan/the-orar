@@ -38,7 +38,7 @@ function NotFound() {
 
 function redirectToSetupTab(tab: SetupTab) {
 	return () => {
-		throw redirect({ to: "/setup", search: { tab } })
+		throw redirect({ to: "/setup", search: { tab, manual: false } })
 	}
 }
 
@@ -80,6 +80,7 @@ const setupRoute = createRoute({
 	path: "/setup",
 	validateSearch: (search: Record<string, unknown>) => ({
 		tab: parseSetupTab(search.tab),
+		manual: search.manual === true || search.manual === "1",
 	}),
 	component: SetupPage,
 	beforeLoad: () => {

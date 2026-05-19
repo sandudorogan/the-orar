@@ -1,21 +1,23 @@
 import { useMessages } from "@/app/i18n/use-i18n.ts"
 import { useProject } from "@/app/project-context.tsx"
+import { isProjectSetupEmpty, isProjectSetupReady } from "@/features/setup/project-setup.ts"
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@orar/ui"
 import { useNavigate } from "@tanstack/react-router"
 import { BookOpen, DoorOpen, GraduationCap, ListChecks, ShieldCheck, Users } from "lucide-react"
+import { useEffect } from "react"
 
 export function DashboardPage() {
 	const messages = useMessages()
-	const { project } = useProject()
+	const { project, isLoading } = useProject()
 	const navigate = useNavigate()
 
-	const hasClassGroups = project.classGroups.length > 0
-	const setupReady =
-		project.classes.length > 0 &&
-		hasClassGroups &&
-		project.teachers.length > 0 &&
-		project.classrooms.length > 0 &&
-		project.activities.length > 0
+	const isEmpty = isProjectSetupEmpty(project)
+	const setupReady = isProjectSetupReady(project)
+
+	useEffect(() => {
+		if (isLoading || !isEmpty) return
+		navigate({ to: "/setup", search: { tab: "import", manual: false }, replace: true })
+	}, [isEmpty, isLoading, navigate])
 
 	const stats = [
 		{
@@ -45,6 +47,10 @@ export function DashboardPage() {
 		},
 	]
 
+	if (isLoading || isEmpty) {
+		return null
+	}
+
 	return (
 		<div className="space-y-6">
 			<div>
@@ -70,7 +76,17 @@ export function DashboardPage() {
 							</div>
 						))}
 					</div>
-					<Button onClick={() => navigate({ to: "/setup", search: { tab: "classes" } })}>
+					<Button
+						onClick={() =>
+							navigate({
+								to: "/setup",
+								search: {
+									tab: setupReady ? "classes" : "import",
+									manual: setupReady,
+								},
+							})
+						}
+					>
 						<ListChecks className="h-4 w-4" />
 						{setupReady ? messages.setup.manageProject : messages.setup.continueSetup}
 					</Button>

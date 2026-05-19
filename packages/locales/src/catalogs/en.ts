@@ -53,8 +53,19 @@ const en: MessageCatalog = {
 	},
 	setup: {
 		title: "Project setup",
-		description:
-			"Add classes, teachers, rooms, activities, and availability rules in one place. You can also bulk-import from CSV.",
+		description: "Add classes, teachers, rooms, activities, and availability rules in one place.",
+		emptyTitle: "Get your timetable data into Orar",
+		emptyDescription:
+			"Start with AI-assisted import from spreadsheets or notes, or add classes and activities manually.",
+		aiPathTitle: "Use AI to build your CSV",
+		aiPathDescription:
+			"Copy our prompt into ChatGPT, Claude, or Gemini with your class lists, teacher loads, or existing spreadsheets. Paste the CSV back here.",
+		aiPathCta: "Copy AI conversion prompt",
+		manualPathTitle: "Add data manually",
+		manualPathDescription:
+			"Enter classes, teachers, rooms, and activities step by step inside Orar.",
+		manualPathCta: "Start manual setup",
+		importDivider: "Or upload / paste Orar CSV",
 		progressTitle: "Setup progress",
 		progressDescription: "Complete the required steps before generating a timetable.",
 		readyDescription: "Required data is in place. You can refine details or generate a timetable.",
@@ -62,7 +73,8 @@ const en: MessageCatalog = {
 		stepIncomplete: "Needs data",
 		optionalStep: "Optional",
 		generateCta: "Generate timetable",
-		continueSetup: "Continue project setup",
+		continueSetup: "Set up your project",
+		getStarted: "Get started",
 		manageProject: "Edit project data",
 	},
 	dashboard: {

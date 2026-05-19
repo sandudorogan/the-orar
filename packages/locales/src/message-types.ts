@@ -52,6 +52,15 @@ export interface MessageCatalog {
 	setup: {
 		title: string
 		description: string
+		emptyTitle: string
+		emptyDescription: string
+		aiPathTitle: string
+		aiPathDescription: string
+		aiPathCta: string
+		manualPathTitle: string
+		manualPathDescription: string
+		manualPathCta: string
+		importDivider: string
 		progressTitle: string
 		progressDescription: string
 		readyDescription: string
@@ -60,6 +69,7 @@ export interface MessageCatalog {
 		optionalStep: string
 		generateCta: string
 		continueSetup: string
+		getStarted: string
 		manageProject: string
 	}
 	dashboard: {

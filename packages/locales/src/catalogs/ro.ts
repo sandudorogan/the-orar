@@ -54,7 +54,18 @@ const ro: MessageCatalog = {
 	setup: {
 		title: "Configurare proiect",
 		description:
-			"Adaugă clase, profesori, săli, activități și reguli de disponibilitate într-un singur loc. Poți importa în masă din CSV.",
+			"Adaugă clase, profesori, săli, activități și reguli de disponibilitate într-un singur loc.",
+		emptyTitle: "Adaugă datele orarului în Orar",
+		emptyDescription:
+			"Începe cu import asistat de AI din foi de calcul sau note, sau adaugă manual clasele și activitățile.",
+		aiPathTitle: "Folosește AI pentru CSV",
+		aiPathDescription:
+			"Copiază promptul nostru în ChatGPT, Claude sau Gemini împreună cu listele de clase, sarcini ale profesorilor sau foi existente. Lipește CSV-ul aici.",
+		aiPathCta: "Copiază promptul AI",
+		manualPathTitle: "Adaugă manual",
+		manualPathDescription: "Introdu clase, profesori, săli și activități pas cu pas în Orar.",
+		manualPathCta: "Începe configurarea manuală",
+		importDivider: "Sau încarcă / lipește CSV Orar",
 		progressTitle: "Progres configurare",
 		progressDescription: "Completează pașii obligatorii înainte de generarea orarului.",
 		readyDescription: "Datele obligatorii sunt complete. Poți rafina detaliile sau genera orarul.",
@@ -62,7 +73,8 @@ const ro: MessageCatalog = {
 		stepIncomplete: "Lipsesc date",
 		optionalStep: "Opțional",
 		generateCta: "Generează orarul",
-		continueSetup: "Continuă configurarea",
+		continueSetup: "Configurează proiectul",
+		getStarted: "Începe",
 		manageProject: "Editează datele proiectului",
 	},
 	dashboard: {

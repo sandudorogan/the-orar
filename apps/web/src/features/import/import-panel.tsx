@@ -1,5 +1,6 @@
 import { useMessages } from "@/app/i18n/use-i18n.ts"
 import { useProject } from "@/app/project-context.tsx"
+import { isProjectSetupEmpty } from "@/features/setup/project-setup.ts"
 import {
 	ORAR_CSV_AI_PROMPT,
 	ORAR_CSV_HEADER,
@@ -8,18 +9,35 @@ import {
 	buildProjectFromOrarCsv,
 } from "@orar/domain"
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@orar/ui"
-import { AlertCircle, CheckCircle2, Clipboard, FileUp, Upload } from "lucide-react"
+import {
+	AlertCircle,
+	CheckCircle2,
+	Clipboard,
+	FileUp,
+	PencilLine,
+	Sparkles,
+	Upload,
+} from "lucide-react"
 import { useRef, useState } from "react"
 
-export function ImportPanel({ embedded = false }: { embedded?: boolean }) {
+export function ImportPanel({
+	embedded = false,
+	onStartManual,
+}: {
+	embedded?: boolean
+	onStartManual?: () => void
+}) {
 	const messages = useMessages()
-	const { replaceProject } = useProject()
+	const { project, replaceProject } = useProject()
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	const [csvText, setCsvText] = useState("")
 	const [result, setResult] = useState<OrarCsvImportResult | null>(null)
 	const [errors, setErrors] = useState<string[]>([])
 	const [copied, setCopied] = useState(false)
 	const [imported, setImported] = useState(false)
+
+	const isEmpty = isProjectSetupEmpty(project)
+	const showOnboarding = embedded && isEmpty
 
 	function validate(text = csvText) {
 		setImported(false)
@@ -76,8 +94,53 @@ export function ImportPanel({ embedded = false }: { embedded?: boolean }) {
 				</div>
 			)}
 
-			{embedded && (
+			{embedded && !showOnboarding && (
 				<p className="max-w-3xl text-sm text-text-secondary">{messages.importCsv.description}</p>
+			)}
+
+			{showOnboarding && (
+				<div className="grid gap-4 md:grid-cols-2">
+					<Card className="border-action-primary/30 bg-action-primary/5">
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2 text-base">
+								<Sparkles className="h-5 w-5 text-action-primary" />
+								{messages.setup.aiPathTitle}
+							</CardTitle>
+							<CardDescription>{messages.setup.aiPathDescription}</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<Button type="button" onClick={copyPrompt}>
+								<Clipboard className="h-4 w-4" />
+								{copied ? messages.importCsv.promptCopied : messages.setup.aiPathCta}
+							</Button>
+						</CardContent>
+					</Card>
+
+					<Card>
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2 text-base">
+								<PencilLine className="h-5 w-5 text-text-secondary" />
+								{messages.setup.manualPathTitle}
+							</CardTitle>
+							<CardDescription>{messages.setup.manualPathDescription}</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<Button type="button" variant="outline" onClick={onStartManual}>
+								{messages.setup.manualPathCta}
+							</Button>
+						</CardContent>
+					</Card>
+				</div>
+			)}
+
+			{showOnboarding && (
+				<div className="relative flex items-center gap-4 py-1">
+					<div className="h-px flex-1 bg-border-subtle" />
+					<span className="shrink-0 text-xs font-medium uppercase tracking-wide text-text-muted">
+						{messages.setup.importDivider}
+					</span>
+					<div className="h-px flex-1 bg-border-subtle" />
+				</div>
 			)}
 
 			<div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
@@ -138,10 +201,12 @@ export function ImportPanel({ embedded = false }: { embedded?: boolean }) {
 									<CheckCircle2 className="h-4 w-4" />
 									{messages.importCsv.validate}
 								</Button>
-								<Button type="button" variant="outline" onClick={copyPrompt}>
-									<Clipboard className="h-4 w-4" />
-									{copied ? messages.importCsv.promptCopied : messages.importCsv.copyPrompt}
-								</Button>
+								{!showOnboarding && (
+									<Button type="button" variant="outline" onClick={copyPrompt}>
+										<Clipboard className="h-4 w-4" />
+										{copied ? messages.importCsv.promptCopied : messages.importCsv.copyPrompt}
+									</Button>
+								)}
 							</div>
 						</CardContent>
 					</Card>

@@ -57,6 +57,15 @@ describe("message-types", () => {
 			setup: {
 				title: "Project setup",
 				description: "Setup description",
+				emptyTitle: "Get started",
+				emptyDescription: "Empty description",
+				aiPathTitle: "AI",
+				aiPathDescription: "AI description",
+				aiPathCta: "Copy prompt",
+				manualPathTitle: "Manual",
+				manualPathDescription: "Manual description",
+				manualPathCta: "Start manual",
+				importDivider: "Or import",
 				progressTitle: "Progress",
 				progressDescription: "Progress description",
 				readyDescription: "Ready",
@@ -65,6 +74,7 @@ describe("message-types", () => {
 				optionalStep: "Optional",
 				generateCta: "Generate",
 				continueSetup: "Continue",
+				getStarted: "Get started",
 				manageProject: "Manage",
 			},
 			dashboard: {
