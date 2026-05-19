@@ -15,14 +15,14 @@ describe("language-registry", () => {
 		expect(supportedLocales.length).toBeGreaterThanOrEqual(2)
 	})
 
-	it("includes en and ro", () => {
-		expect(supportedLocales).toContain("en")
-		expect(supportedLocales).toContain("ro")
+	it("includes all shipped locales", () => {
+		expect(supportedLocales).toEqual(expect.arrayContaining(["en", "ro", "es", "pt", "ru"]))
 	})
 
 	it("validates known locales", () => {
-		expect(isValidLocale("en")).toBe(true)
-		expect(isValidLocale("ro")).toBe(true)
+		for (const locale of ["en", "ro", "es", "pt", "ru"] as const) {
+			expect(isValidLocale(locale)).toBe(true)
+		}
 	})
 
 	it("rejects unknown locales", () => {

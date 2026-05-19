@@ -286,9 +286,9 @@ const ro: MessageCatalog = {
 		highlightLocalFirst: "Local-First",
 		highlightLocalFirstDesc:
 			"Datele tale rămân pe dispozitivul tău, stocate în IndexedDB. Fără cloud, fără riscuri.",
-		highlightBilingual: "Bilingv",
+		highlightBilingual: "Multilingv",
 		highlightBilingualDesc:
-			"Suport complet pentru engleză și română cu schimbare instantanee a limbii.",
+			"Engleză, română, spaniolă, portugheză și rusă cu schimbare instantanee a limbii.",
 		highlightBrowserOnly: "Doar în Browser",
 		highlightBrowserOnlyDesc:
 			"Fără servere, fără backend. Totul rulează în browserul tău folosind Web Workers.",

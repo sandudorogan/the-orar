@@ -1,4 +1,4 @@
-export type Locale = "en" | "ro"
+export type Locale = "en" | "ro" | "es" | "pt" | "ru"
 
 export interface LocaleConfig {
 	code: Locale
@@ -18,6 +18,24 @@ const localeConfigs: Record<Locale, LocaleConfig> = {
 		code: "ro",
 		name: "Romanian",
 		nativeName: "Română",
+		dir: "ltr",
+	},
+	es: {
+		code: "es",
+		name: "Spanish",
+		nativeName: "Español",
+		dir: "ltr",
+	},
+	pt: {
+		code: "pt",
+		name: "Portuguese",
+		nativeName: "Português",
+		dir: "ltr",
+	},
+	ru: {
+		code: "ru",
+		name: "Russian",
+		nativeName: "Русский",
 		dir: "ltr",
 	},
 }

@@ -285,8 +285,9 @@ const en: MessageCatalog = {
 		highlightLocalFirst: "Local-First",
 		highlightLocalFirstDesc:
 			"Your data stays on your device, stored in IndexedDB. No cloud, no risk.",
-		highlightBilingual: "Bilingual",
-		highlightBilingualDesc: "Full English and Romanian support with instant language switching.",
+		highlightBilingual: "Multilingual",
+		highlightBilingualDesc:
+			"English, Romanian, Spanish, Portuguese, and Russian with instant language switching.",
 		highlightBrowserOnly: "Browser-Only",
 		highlightBrowserOnlyDesc:
 			"No servers, no backend. Everything runs in your browser using Web Workers.",
