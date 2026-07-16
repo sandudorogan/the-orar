@@ -129,6 +129,13 @@ function pickBestSlot(
 			}
 		}
 
+		for (const teacherId of prepared.activity.teacherIds) {
+			const limit = problem.teachersById.get(teacherId)?.maxHoursPerDay
+			if (limit === undefined) continue
+			const used = usage.teacher.get(teacherId)
+			if (used && countDayPeriods(used, slot.day) + prepared.duration > limit) return false
+		}
+
 		return true
 	})
 
@@ -182,6 +189,15 @@ function countUsedNeighbors(
 		const next = `${slot.day}:${slot.period + 1}`
 		if (used.has(prev)) count++
 		if (used.has(next)) count++
+	}
+	return count
+}
+
+function countDayPeriods(used: Set<string>, day: string): number {
+	let count = 0
+	const prefix = `${day}:`
+	for (const key of used) {
+		if (key.startsWith(prefix)) count++
 	}
 	return count
 }

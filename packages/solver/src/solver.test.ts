@@ -423,4 +423,34 @@ describe("Fitness scoring", () => {
 		const periods = result.assignments.map((a) => a.timeSlot.period).sort()
 		expect(periods).toEqual([0, 1])
 	})
+
+	it("respects teacher max hours per day during placement", () => {
+		const calendar = createCalendar({
+			name: "Cal",
+			activeDays: ["monday", "tuesday"],
+			periodsPerDay: 3,
+		})
+		const teacher = createTeacher({ name: "T", shortName: "T", maxHoursPerDay: 2 })
+		const cls = createClass({ name: "9A", shortName: "9A" })
+		const group = createClassGroup({ classId: cls.id, name: "All", shortName: "ALL" })
+		const activity = createActivity({
+			name: "Math",
+			subjectName: "Math",
+			teacherIds: [teacher.id],
+			classGroupIds: [group.id],
+			totalPerWeek: 4,
+		})
+
+		const problem = prepareProblem(calendar, [activity], [teacher], [group], [], [])
+		const result = generate(problem, undefined, undefined, { seed: 3 })
+
+		expect(result.placedCount).toBe(4)
+		const byDay = new Map<string, number>()
+		for (const a of result.assignments) {
+			byDay.set(a.timeSlot.day, (byDay.get(a.timeSlot.day) ?? 0) + 1)
+		}
+		for (const count of byDay.values()) {
+			expect(count).toBeLessThanOrEqual(2)
+		}
+	})
 })

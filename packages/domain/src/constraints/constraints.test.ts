@@ -12,6 +12,7 @@ import { createActivityPreferredRoom } from "./activity-preferred-room.ts"
 import { createActivityPreferredTime } from "./activity-preferred-time.ts"
 import { createNoClassOverlap } from "./no-overlap.ts"
 import { createDefaultRegistry } from "./registry.ts"
+import { createTeacherMaxHoursPerDay } from "./teacher-max-hours.ts"
 import type { ScheduleContext } from "./types.ts"
 
 function makeContext(overrides: Partial<ScheduleContext> = {}): ScheduleContext {
@@ -458,5 +459,41 @@ describe("no-class-overlap with whole-class groups", () => {
 		}
 
 		expect(createNoClassOverlap().evaluate(context)).toHaveLength(0)
+	})
+})
+
+describe("teacher-max-hours-per-day", () => {
+	it("flags a teacher exceeding max hours per day", () => {
+		const calendar = createCalendar({ name: "Cal", activeDays: ["monday"], periodsPerDay: 6 })
+		const teacher = createTeacher({ name: "T", shortName: "T", maxHoursPerDay: 2 })
+		const cls = createClass({ name: "9A", shortName: "9A" })
+		const group = createClassGroup({ classId: cls.id, name: "All", shortName: "ALL" })
+		const activities = [0, 1, 2].map((i) =>
+			createActivity({
+				name: `A${i}`,
+				subjectName: `S${i}`,
+				teacherIds: [teacher.id],
+				classGroupIds: [group.id],
+			}),
+		)
+		const context: ScheduleContext = {
+			calendar,
+			classes: [cls],
+			classGroups: [group],
+			teachers: [teacher],
+			classrooms: [],
+			activities,
+			availabilityRules: [],
+			assignments: activities.map((a, i) => ({
+				activityId: a.id,
+				timeSlot: { day: "monday", period: i },
+				locked: false,
+				duration: 1,
+			})),
+		}
+
+		const violations = createTeacherMaxHoursPerDay().evaluate(context)
+		expect(violations).toHaveLength(1)
+		expect(violations[0]!.weight).toBe("hard")
 	})
 })

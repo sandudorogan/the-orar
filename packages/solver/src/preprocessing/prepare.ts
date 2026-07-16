@@ -14,6 +14,7 @@ export interface PreparedProblem {
 	allSlots: TimeSlot[]
 	slotCount: number
 	groupsById: Map<string, ClassGroup>
+	teachersById: Map<string, Teacher>
 }
 
 export interface PreparedActivity {
@@ -26,7 +27,7 @@ export interface PreparedActivity {
 export function prepareProblem(
 	calendar: Calendar,
 	activities: Activity[],
-	_teachers: Teacher[],
+	teachers: Teacher[],
 	classGroups: ClassGroup[],
 	classrooms: Classroom[],
 	availabilityRules: AvailabilityRule[],
@@ -57,6 +58,7 @@ export function prepareProblem(
 		allSlots,
 		slotCount: allSlots.length,
 		groupsById: new Map(classGroups.map((g) => [g.id, g])),
+		teachersById: new Map(teachers.map((t) => [t.id, t])),
 	}
 }
 

@@ -44,6 +44,7 @@ export function createDefaultRegistry(): ConstraintRegistry {
 	registry.register(createTeacherAvailability())
 	registry.register(createClassAvailability())
 	registry.register(createClassroomAvailability())
+	registry.register(createTeacherMaxHoursPerDay())
 	return registry
 }
 
@@ -53,3 +54,4 @@ import { createNoClassOverlap } from "./no-overlap.ts"
 import { createNoRoomOverlap } from "./no-overlap.ts"
 import { createNoTeacherOverlap } from "./no-overlap.ts"
 import { createTeacherAvailability } from "./teacher-availability.ts"
+import { createTeacherMaxHoursPerDay } from "./teacher-max-hours.ts"
