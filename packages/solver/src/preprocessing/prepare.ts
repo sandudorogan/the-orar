@@ -7,7 +7,7 @@ import type {
 	Teacher,
 	TimeSlot,
 } from "@orar/domain"
-import { timeSlotKey } from "@orar/domain"
+import { timeSlotKey, timeSlotKeysForSpan } from "@orar/domain"
 
 export interface PreparedProblem {
 	activities: PreparedActivity[]
@@ -102,14 +102,15 @@ function computeAvailableSlots(
 	return allSlots.filter((slot) => {
 		if (slot.period + duration > periodsPerDay) return false
 
-		const key = timeSlotKey(slot)
+		const spanKeys = timeSlotKeysForSpan(slot, duration)
 
-		for (const teacherId of activity.teacherIds) {
-			if (unavailableMap.get(teacherId)?.has(key)) return false
-		}
-
-		for (const groupId of activity.classGroupIds) {
-			if (unavailableMap.get(groupId)?.has(key)) return false
+		for (const key of spanKeys) {
+			for (const teacherId of activity.teacherIds) {
+				if (unavailableMap.get(teacherId)?.has(key)) return false
+			}
+			for (const groupId of activity.classGroupIds) {
+				if (unavailableMap.get(groupId)?.has(key)) return false
+			}
 		}
 
 		return true

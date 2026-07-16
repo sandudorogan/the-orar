@@ -165,6 +165,35 @@ describe("Preprocessing", () => {
 		expect(peActivities).toHaveLength(2)
 		expect(peActivities.map((a) => a.duration).sort()).toEqual([1, 2])
 	})
+
+	it("excludes start slots whose span crosses an unavailable period", () => {
+		const calendar = createCalendar({
+			name: "Cal",
+			activeDays: ["monday"],
+			periodsPerDay: 4,
+		})
+		const teacher = createTeacher({ name: "T", shortName: "T" })
+		const cls = createClass({ name: "9A", shortName: "9A" })
+		const group = createClassGroup({ classId: cls.id, name: "All", shortName: "ALL" })
+		const activity = createActivity({
+			name: "Math",
+			subjectName: "Math",
+			teacherIds: [teacher.id],
+			classGroupIds: [group.id],
+			duration: 2,
+			totalPerWeek: 1,
+		})
+		const rule = createAvailabilityRule({
+			targetType: "teacher",
+			targetId: teacher.id,
+			type: "unavailable",
+			timeSlots: [{ day: "monday", period: 1 }],
+		})
+
+		const problem = prepareProblem(calendar, [activity], [teacher], [group], [], [rule])
+
+		expect(problem.activities[0]!.availableSlots.map((s) => s.period)).toEqual([2])
+	})
 })
 
 describe("Generation", () => {
