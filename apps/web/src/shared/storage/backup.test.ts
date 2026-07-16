@@ -1,4 +1,5 @@
 import {
+	type Assignment,
 	createCalendar,
 	createInstitution,
 	createScheduleProject,
@@ -22,11 +23,11 @@ describe("backup", () => {
 			institution: inst,
 		})
 
-		const json = exportProjectToJson(project)
+		const json = exportProjectToJson(project, [])
 		const restored = importProjectFromJson(json)
-		expect(restored.name).toBe(project.name)
-		expect(restored.id).toBe(project.id)
-		expect(restored.calendar.periodsPerDay).toBe(7)
+		expect(restored.project.name).toBe(project.name)
+		expect(restored.project.id).toBe(project.id)
+		expect(restored.project.calendar.periodsPerDay).toBe(7)
 	})
 
 	it("preserves teachers in round-trip", () => {
@@ -38,10 +39,10 @@ describe("backup", () => {
 		const teacher = createTeacher({ name: "John", shortName: "JD" })
 		project.teachers.push(teacher)
 
-		const json = exportProjectToJson(project)
+		const json = exportProjectToJson(project, [])
 		const restored = importProjectFromJson(json)
-		expect(restored.teachers).toHaveLength(1)
-		expect(restored.teachers[0]!.name).toBe("John")
+		expect(restored.project.teachers).toHaveLength(1)
+		expect(restored.project.teachers[0]!.name).toBe("John")
 	})
 
 	it("produces valid JSON", () => {
@@ -50,7 +51,33 @@ describe("backup", () => {
 			calendar: cal,
 			institution: inst,
 		})
-		const json = exportProjectToJson(project)
+		const json = exportProjectToJson(project, [])
 		expect(() => JSON.parse(json)).not.toThrow()
+	})
+
+	it("round-trips assignments through export and import", () => {
+		const project = createScheduleProject({ name: "Test", calendar: cal, institution: inst })
+		const assignments: Assignment[] = [
+			{
+				activityId: crypto.randomUUID(),
+				timeSlot: { day: "monday", period: 0 },
+				locked: true,
+				duration: 1,
+			},
+		]
+
+		const json = exportProjectToJson(project, assignments)
+		const imported = importProjectFromJson(json)
+
+		expect(imported.project.id).toBe(project.id)
+		expect(imported.assignments).toEqual(assignments)
+	})
+
+	it("imports a legacy raw-project file with empty assignments", () => {
+		const project = createScheduleProject({ name: "Test", calendar: cal, institution: inst })
+		const imported = importProjectFromJson(JSON.stringify(project))
+
+		expect(imported.project.id).toBe(project.id)
+		expect(imported.assignments).toEqual([])
 	})
 })

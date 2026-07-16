@@ -25,11 +25,11 @@ import { useRef } from "react"
 export function SettingsPage() {
 	const messages = useMessages()
 	const { locale, setLocale } = useLocale()
-	const { project, replaceProject } = useProject()
+	const { project, assignments, replaceProject } = useProject()
 	const fileInputRef = useRef<HTMLInputElement>(null)
 
 	function handleExport() {
-		const json = exportProjectToJson(project)
+		const json = exportProjectToJson(project, assignments)
 		downloadJson(json, `${project.name.replace(/\s+/g, "-").toLowerCase()}.json`)
 	}
 
@@ -40,7 +40,7 @@ export function SettingsPage() {
 		reader.onload = (ev) => {
 			const text = ev.target?.result as string
 			const imported = importProjectFromJson(text)
-			replaceProject(imported)
+			replaceProject(imported.project, imported.assignments)
 		}
 		reader.readAsText(file)
 		e.target.value = ""
