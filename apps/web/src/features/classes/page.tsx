@@ -77,12 +77,14 @@ export function ClassesPanel({ embedded = false }: { embedded?: boolean }) {
 		const name = form.get("name") as string
 		const shortName = form.get("shortName") as string
 		const studentCount = form.get("studentCount") as string
+		const isWholeClass = form.get("isWholeClass") === "on"
 
 		if (editingGroup) {
 			updateClassGroup(editingGroup.id, {
 				name,
 				shortName,
 				studentCount: studentCount ? Number(studentCount) : undefined,
+				isWholeClass,
 			})
 		} else {
 			addClassGroup({
@@ -90,6 +92,7 @@ export function ClassesPanel({ embedded = false }: { embedded?: boolean }) {
 				name,
 				shortName,
 				studentCount: studentCount ? Number(studentCount) : undefined,
+				isWholeClass,
 			})
 		}
 		setGroupDialogOpen(false)
@@ -331,6 +334,21 @@ export function ClassesPanel({ embedded = false }: { embedded?: boolean }) {
 												defaultValue={editingGroup?.studentCount ?? ""}
 											/>
 										</div>
+										<div className="flex items-center gap-2">
+											<input
+												id="group-isWholeClass"
+												name="isWholeClass"
+												type="checkbox"
+												defaultChecked={editingGroup?.isWholeClass ?? false}
+												className="h-4 w-4 accent-action-primary"
+											/>
+											<label
+												htmlFor="group-isWholeClass"
+												className="text-sm font-medium text-text-primary"
+											>
+												{messages.classes.wholeClass}
+											</label>
+										</div>
 									</div>
 									<DialogFooter>
 										<Button type="submit">{messages.common.save}</Button>
@@ -352,6 +370,7 @@ export function ClassesPanel({ embedded = false }: { embedded?: boolean }) {
 									<TableHead>{messages.common.name}</TableHead>
 									<TableHead>{messages.common.shortName}</TableHead>
 									<TableHead>{messages.classes.studentCount}</TableHead>
+									<TableHead>{messages.classes.wholeClass}</TableHead>
 									<TableHead className="w-24">{messages.common.actions}</TableHead>
 								</TableRow>
 							</TableHeader>
@@ -361,6 +380,9 @@ export function ClassesPanel({ embedded = false }: { embedded?: boolean }) {
 										<TableCell className="font-medium">{group.name}</TableCell>
 										<TableCell>{group.shortName}</TableCell>
 										<TableCell>{group.studentCount ?? "-"}</TableCell>
+										<TableCell>
+											{group.isWholeClass ? messages.common.yes : messages.common.no}
+										</TableCell>
 										<TableCell>
 											<div className="flex gap-1">
 												<Button variant="ghost" size="icon" onClick={() => openEditGroup(group)}>

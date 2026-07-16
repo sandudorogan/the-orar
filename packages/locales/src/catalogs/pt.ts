@@ -96,6 +96,7 @@ const pt: MessageCatalog = {
 		editClass: "Editar turma",
 		year: "Ano",
 		studentCount: "Alunos",
+		wholeClass: "Turma completa",
 		groupCount: "Grupos",
 		groups: "Grupos",
 		addGroup: "Adicionar grupo",

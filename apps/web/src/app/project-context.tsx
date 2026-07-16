@@ -45,7 +45,7 @@ interface ProjectContextValue {
 
 	addClassGroup: (
 		data: Pick<ClassGroup, "classId" | "name" | "shortName"> &
-			Partial<Pick<ClassGroup, "studentCount">>,
+			Partial<Pick<ClassGroup, "studentCount" | "isWholeClass">>,
 	) => void
 	updateClassGroup: (id: string, data: Partial<Omit<ClassGroup, "id">>) => void
 	deleteClassGroup: (id: string) => void
@@ -169,7 +169,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 	const addClassGroup = useCallback(
 		(
 			data: Pick<ClassGroup, "classId" | "name" | "shortName"> &
-				Partial<Pick<ClassGroup, "studentCount">>,
+				Partial<Pick<ClassGroup, "studentCount" | "isWholeClass">>,
 		) => {
 			const group = createClassGroup(data)
 			updateProject((p) => ({ ...p, classGroups: [...p.classGroups, group] }))

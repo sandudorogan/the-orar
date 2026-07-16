@@ -95,6 +95,7 @@ const en: MessageCatalog = {
 		editClass: "Edit Class",
 		year: "Year",
 		studentCount: "Students",
+		wholeClass: "Whole class",
 		groupCount: "Groups",
 		groups: "Class Groups",
 		addGroup: "Add Group",

@@ -96,6 +96,7 @@ const ru: MessageCatalog = {
 		editClass: "Изменить класс",
 		year: "Год",
 		studentCount: "Ученики",
+		wholeClass: "Весь класс",
 		groupCount: "Группы",
 		groups: "Группы",
 		addGroup: "Добавить группу",

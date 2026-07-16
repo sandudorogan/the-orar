@@ -90,6 +90,7 @@ export interface MessageCatalog {
 		editClass: string
 		year: string
 		studentCount: string
+		wholeClass: string
 		groupCount: string
 		groups: string
 		addGroup: string

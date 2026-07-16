@@ -226,4 +226,95 @@ describe("Orar CSV", () => {
 		expect(ORAR_CSV_AI_PROMPT).toContain("assignment rows only if")
 		expect(ORAR_CSV_AI_PROMPT).toContain("Do not use display names as references")
 	})
+
+	it("round-trips is_whole_class through export and import", () => {
+		const source = csv(
+			{ record_type: "project", key: "p", name: "Demo", kind: "school" },
+			{
+				record_type: "calendar",
+				key: "main",
+				active_days: "monday",
+				periods_per_day: 4,
+				period_duration_minutes: 50,
+				start_time: "08:00",
+			},
+			{ record_type: "class", key: "class_9a", name: "Class 9A", short_name: "9A" },
+			{
+				record_type: "group",
+				key: "group_9a_all",
+				name: "9A All",
+				short_name: "ALL",
+				parent_key: "class_9a",
+				is_whole_class: true,
+			},
+			{
+				record_type: "group",
+				key: "group_9a_sci",
+				name: "9A Sci",
+				short_name: "SCI",
+				parent_key: "class_9a",
+			},
+		)
+
+		const first = buildProjectFromOrarCsv(source)
+		expect(first.project.classGroups.filter((g) => g.isWholeClass)).toHaveLength(1)
+
+		const exported = exportProjectToOrarCsv(first.project, [])
+		const second = buildProjectFromOrarCsv(exported)
+		expect(second.project.classGroups.filter((g) => g.isWholeClass)).toHaveLength(1)
+	})
+
+	it("marks a class's only group as whole-class on import", () => {
+		const source = csv(
+			{ record_type: "project", key: "p", name: "Demo", kind: "school" },
+			{
+				record_type: "calendar",
+				key: "main",
+				active_days: "monday",
+				periods_per_day: 4,
+				period_duration_minutes: 50,
+				start_time: "08:00",
+			},
+			{ record_type: "class", key: "class_9a", name: "Class 9A", short_name: "9A" },
+			{
+				record_type: "group",
+				key: "group_9a_all",
+				name: "9A All",
+				short_name: "ALL",
+				parent_key: "class_9a",
+			},
+		)
+
+		const imported = buildProjectFromOrarCsv(source)
+		expect(imported.project.classGroups[0]!.isWholeClass).toBe(true)
+	})
+
+	it("still imports CSV without the is_whole_class column", () => {
+		const legacyColumns = ORAR_CSV_COLUMNS.filter((c) => c !== "is_whole_class")
+		const legacyRows: CsvCell[] = [
+			{ record_type: "project", key: "p", name: "Demo", kind: "school" },
+			{
+				record_type: "calendar",
+				key: "main",
+				active_days: "monday",
+				periods_per_day: 4,
+				period_duration_minutes: 50,
+				start_time: "08:00",
+			},
+			{ record_type: "class", key: "class_9a", name: "Class 9A", short_name: "9A" },
+			{
+				record_type: "group",
+				key: "group_9a_all",
+				name: "9A All",
+				short_name: "ALL",
+				parent_key: "class_9a",
+			},
+		]
+		const legacyCsv = [
+			legacyColumns.join(","),
+			...legacyRows.map((row) => legacyColumns.map((c) => String(row[c] ?? "")).join(",")),
+		].join("\n")
+
+		expect(() => buildProjectFromOrarCsv(legacyCsv)).not.toThrow()
+	})
 })

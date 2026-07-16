@@ -95,6 +95,7 @@ const ro: MessageCatalog = {
 		editClass: "Editează clasă",
 		year: "An",
 		studentCount: "Elevi",
+		wholeClass: "Toată clasa",
 		groupCount: "Grupe",
 		groups: "Grupe",
 		addGroup: "Adaugă grupă",

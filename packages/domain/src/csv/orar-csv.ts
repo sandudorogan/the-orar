@@ -31,6 +31,7 @@ export const ORAR_CSV_COLUMNS = [
 	"start_time",
 	"year",
 	"student_count",
+	"is_whole_class",
 	"email",
 	"max_hours_per_day",
 	"max_hours_per_week",
@@ -62,6 +63,8 @@ export const ORAR_CSV_COLUMNS = [
 
 export const ORAR_CSV_HEADER = ORAR_CSV_COLUMNS.join(",")
 
+const OPTIONAL_COLUMNS = new Set<string>(["is_whole_class"])
+
 export const ORAR_CSV_AI_PROMPT = `Convert the attached or pasted school timetable data into Orar CSV v1.
 
 Random Excel files are expected. The source may have multiple sheets, merged headers, Romanian or English labels, teacher initials, room names, weekly lesson counts, availability tables, or an already-created timetable. Infer the structure carefully, but output only valid Orar CSV.
@@ -84,7 +87,7 @@ Record type schema:
 - project: one row. key required. name = institution/project name. kind = school or university.
 - calendar: one row. active_days = monday|tuesday|...; periods_per_day integer; period_duration_minutes integer; start_time HH:MM.
 - class: one row per cohort/class. key, name, short_name required. year and student_count optional.
-- group: one row per subgroup. key, name, short_name, parent_key required. parent_key references a class key. If the source has no subgroups, create one all-students group per class, such as group_9a_all.
+- group: one row per subgroup. key, name, short_name, parent_key required. parent_key references a class key. If the source has no subgroups, create one all-students group per class, such as group_9a_all. Set is_whole_class to true for any group that contains all students of its class (including generated all-students groups); leave it empty for partial subgroups.
 - teacher: one row per teacher. key, name, short_name required. email, max_hours_per_day, max_hours_per_week optional.
 - classroom: one row per room. key, name, short_name required. capacity, building, tags optional. tags use values like lab|sports|computer.
 - activity: one row per scheduling demand. key, name, subject, teacher_keys, class_group_keys, duration, total_per_week required. teacher_keys references teacher rows. class_group_keys references group rows. preferred_room_keys references classroom rows. room_tags lists acceptable tags. split_parts is optional, such as 1|1|1 or 2|1.
@@ -183,7 +186,9 @@ export function parseOrarCsv(text: string): ParsedCsvRow[] {
 	}
 
 	const header = table[0] ?? []
-	const missing = ORAR_CSV_COLUMNS.filter((column) => !header.includes(column))
+	const missing = ORAR_CSV_COLUMNS.filter(
+		(column) => !OPTIONAL_COLUMNS.has(column) && !header.includes(column),
+	)
 	if (missing.length > 0) {
 		throw new OrarCsvValidationError([
 			{ row: 1, column: "header", message: `missing header columns: ${missing.join(", ")}` },
@@ -315,9 +320,18 @@ export function buildProjectFromOrarCsv(text: string): OrarCsvImportResult {
 			name: requireCell(row, "name", errors),
 			shortName: requireCell(row, "short_name", errors),
 			studentCount: parseInteger(row, "student_count", false, errors),
+			isWholeClass: row.is_whole_class.trim().toLowerCase() === "true",
 		})
 		project.classGroups.push(group)
 		groupIds.set(row.key, group.id)
+	}
+
+	const groupCountByClass = new Map<string, number>()
+	for (const group of project.classGroups) {
+		groupCountByClass.set(group.classId, (groupCountByClass.get(group.classId) ?? 0) + 1)
+	}
+	for (const group of project.classGroups) {
+		if (groupCountByClass.get(group.classId) === 1) group.isWholeClass = true
 	}
 
 	const teacherIds = new Map<string, string>()
@@ -473,6 +487,7 @@ export function exportProjectToOrarCsv(
 			short_name: group.shortName,
 			parent_key: group.classId,
 			student_count: group.studentCount,
+			is_whole_class: group.isWholeClass,
 		})
 	}
 	for (const teacher of project.teachers) {
