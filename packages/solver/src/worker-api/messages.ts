@@ -7,7 +7,12 @@ export type SolverRequest =
 export type SolverResponse =
 	| { type: "progress"; progress: number; placedCount: number; totalCount: number }
 	| { type: "partial"; assignments: Assignment[]; fitness: number }
-	| { type: "complete"; assignments: Assignment[]; fitness: number }
+	| {
+			type: "complete"
+			assignments: Assignment[]
+			fitness: number
+			unplacedActivityIds: string[]
+	  }
 	| { type: "failed"; reason: string }
 	| { type: "cancelled" }
 
