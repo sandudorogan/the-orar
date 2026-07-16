@@ -194,6 +194,11 @@ describe("message-types", () => {
 				period: "Period",
 				noScheduleGenerated: "No schedule has been generated yet",
 				generateFirst: "Go to Generate to create a schedule first",
+				selectedActivity: "Selected",
+				moveHint: "Click another cell to move it",
+				lock: "Lock",
+				unlock: "Unlock",
+				deselect: "Deselect",
 			},
 			availability: {
 				available: "Available",

@@ -197,6 +197,11 @@ const es: MessageCatalog = {
 		period: "Periodo",
 		noScheduleGenerated: "Aún no se ha generado ningún horario",
 		generateFirst: "Ve a Generar para crear un horario primero",
+		selectedActivity: "Seleccionado",
+		moveHint: "Haz clic en otra celda para mover",
+		lock: "Bloquear",
+		unlock: "Desbloquear",
+		deselect: "Deseleccionar",
 	},
 	availability: {
 		available: "Disponible",

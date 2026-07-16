@@ -189,6 +189,11 @@ export interface MessageCatalog {
 		period: string
 		noScheduleGenerated: string
 		generateFirst: string
+		selectedActivity: string
+		moveHint: string
+		lock: string
+		unlock: string
+		deselect: string
 	}
 	availability: {
 		available: string

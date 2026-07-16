@@ -1,5 +1,6 @@
 import { useLocale, useMessages } from "@/app/i18n/use-i18n.ts"
 import { useProject } from "@/app/project-context.tsx"
+import type { DayOfWeek } from "@orar/domain"
 import {
 	detectConflicts,
 	getAssignmentsForClassGroup,
@@ -27,19 +28,25 @@ import {
 	TimetableGrid,
 } from "@orar/ui"
 import { useNavigate } from "@tanstack/react-router"
-import { CalendarDays, DoorOpen, GraduationCap, Users, Zap } from "lucide-react"
+import { CalendarDays, DoorOpen, GraduationCap, Lock, LockOpen, Users, X, Zap } from "lucide-react"
 import { useMemo, useState } from "react"
 
 type ViewMode = "class" | "teacher" | "classroom"
 
+interface SelectedRef {
+	activityId: string
+	slotKey: string
+}
+
 export function TimetablesPage() {
 	const messages = useMessages()
 	const { locale } = useLocale()
-	const { project, assignments } = useProject()
+	const { project, assignments, setAssignments } = useProject()
 	const navigate = useNavigate()
 
 	const [viewMode, setViewMode] = useState<ViewMode>("class")
 	const [selectedId, setSelectedId] = useState<string>("")
+	const [selected, setSelected] = useState<SelectedRef | null>(null)
 
 	const conflictSlotKeys = useMemo(() => {
 		if (assignments.length === 0) return new Set<string>()
@@ -68,6 +75,11 @@ export function TimetablesPage() {
 	const periods = project.calendar.periodsPerDay
 
 	const dayLabels = days.map((d) => translateDayNameShort(d, locale))
+
+	const labelToDay = useMemo(
+		() => Object.fromEntries(days.map((d, i) => [dayLabels[i]!, d])) as Record<string, DayOfWeek>,
+		[days, dayLabels],
+	)
 
 	const entityOptions = useMemo(() => {
 		switch (viewMode) {
@@ -104,6 +116,65 @@ export function TimetablesPage() {
 				return getAssignmentsForRoom(assignments, selectedId)
 		}
 	}, [viewMode, selectedId, assignments, project.activities])
+
+	function findAssignmentIndex(ref: SelectedRef): number {
+		return assignments.findIndex(
+			(a) => a.activityId === ref.activityId && timeSlotKey(a.timeSlot) === ref.slotKey,
+		)
+	}
+
+	function handleCellClick(dayLabel: string, period: number) {
+		const day = labelToDay[dayLabel]
+		if (!day) return
+		const clickedKey = timeSlotKey({ day, period })
+		const itemsInCell = filteredAssignments.filter((a) => timeSlotKey(a.timeSlot) === clickedKey)
+
+		if (selected && selected.slotKey !== clickedKey) {
+			moveSelected(day, period)
+			return
+		}
+
+		if (itemsInCell.length === 0) {
+			setSelected(null)
+			return
+		}
+
+		const currentIndex = selected
+			? itemsInCell.findIndex((a) => a.activityId === selected.activityId)
+			: -1
+		const next = itemsInCell[(currentIndex + 1) % itemsInCell.length]!
+		setSelected({ activityId: next.activityId, slotKey: clickedKey })
+	}
+
+	function moveSelected(day: DayOfWeek, period: number) {
+		if (!selected) return
+		const index = findAssignmentIndex(selected)
+		if (index === -1) {
+			setSelected(null)
+			return
+		}
+		const assignment = assignments[index]!
+		if (assignment.locked) return
+		if (period + (assignment.duration ?? 1) > periods) return
+		const next = [...assignments]
+		next[index] = { ...assignment, timeSlot: { day, period } }
+		setAssignments(next)
+		setSelected({ activityId: assignment.activityId, slotKey: timeSlotKey({ day, period }) })
+	}
+
+	function toggleLock() {
+		if (!selected) return
+		const index = findAssignmentIndex(selected)
+		if (index === -1) return
+		const next = [...assignments]
+		next[index] = { ...next[index]!, locked: !next[index]!.locked }
+		setAssignments(next)
+	}
+
+	const selectedAssignment = selected ? (assignments[findAssignmentIndex(selected)] ?? null) : null
+	const selectedActivity = selectedAssignment
+		? (project.activities.find((a) => a.id === selectedAssignment.activityId) ?? null)
+		: null
 
 	const gridCells = useMemo(() => {
 		const memoDays = project.calendar.activeDays
@@ -152,11 +223,18 @@ export function TimetablesPage() {
 				}
 			}
 
-			const status = hasConflict
-				? ("conflict" as const)
-				: assignment.locked
-					? ("locked" as const)
-					: ("generated" as const)
+			const isSelected =
+				selected !== null &&
+				selected.activityId === assignment.activityId &&
+				selected.slotKey === slotKey
+
+			const status = isSelected
+				? ("selected" as const)
+				: hasConflict
+					? ("conflict" as const)
+					: assignment.locked
+						? ("locked" as const)
+						: ("generated" as const)
 
 			const existing = cells.get(key) ?? []
 			existing.push({
@@ -169,11 +247,12 @@ export function TimetablesPage() {
 		}
 
 		return cells
-	}, [filteredAssignments, viewMode, project, conflictSlotKeys, locale])
+	}, [filteredAssignments, viewMode, project, conflictSlotKeys, locale, selected])
 
 	function handleTabChange(value: string) {
 		setViewMode(value as ViewMode)
 		setSelectedId("")
+		setSelected(null)
 	}
 
 	if (assignments.length === 0) {
@@ -220,7 +299,13 @@ export function TimetablesPage() {
 						</TabsTrigger>
 					</TabsList>
 
-					<Select value={selectedId} onValueChange={setSelectedId}>
+					<Select
+						value={selectedId}
+						onValueChange={(v) => {
+							setSelectedId(v)
+							setSelected(null)
+						}}
+					>
 						<SelectTrigger className="w-[220px]">
 							<SelectValue placeholder={messages.timetables.selectEntity} />
 						</SelectTrigger>
@@ -234,6 +319,29 @@ export function TimetablesPage() {
 					</Select>
 				</div>
 
+				{selectedAssignment && selectedActivity && (
+					<div className="mt-4 flex items-center gap-3 rounded-md border border-status-selected/20 bg-status-selected-bg px-3 py-2">
+						<span className="text-sm font-medium text-status-selected">
+							{messages.timetables.selectedActivity}: {selectedActivity.subjectName}
+						</span>
+						<span className="text-xs text-text-muted">{messages.timetables.moveHint}</span>
+						<div className="ml-auto flex gap-2">
+							<Button size="sm" variant="outline" onClick={toggleLock}>
+								{selectedAssignment.locked ? (
+									<LockOpen className="h-4 w-4" />
+								) : (
+									<Lock className="h-4 w-4" />
+								)}
+								{selectedAssignment.locked ? messages.timetables.unlock : messages.timetables.lock}
+							</Button>
+							<Button size="sm" variant="ghost" onClick={() => setSelected(null)}>
+								<X className="h-4 w-4" />
+								{messages.timetables.deselect}
+							</Button>
+						</div>
+					</div>
+				)}
+
 				<TabsContent value="class" className="mt-4">
 					{selectedId ? (
 						<Card>
@@ -246,6 +354,7 @@ export function TimetablesPage() {
 									periods={periods}
 									cells={gridCells}
 									periodLabel={messages.timetables.period}
+									onCellClick={handleCellClick}
 								/>
 							</CardContent>
 						</Card>
@@ -266,6 +375,7 @@ export function TimetablesPage() {
 									periods={periods}
 									cells={gridCells}
 									periodLabel={messages.timetables.period}
+									onCellClick={handleCellClick}
 								/>
 							</CardContent>
 						</Card>
@@ -286,6 +396,7 @@ export function TimetablesPage() {
 									periods={periods}
 									cells={gridCells}
 									periodLabel={messages.timetables.period}
+									onCellClick={handleCellClick}
 								/>
 							</CardContent>
 						</Card>

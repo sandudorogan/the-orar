@@ -195,6 +195,11 @@ const ro: MessageCatalog = {
 		period: "Ora",
 		noScheduleGenerated: "Niciun orar nu a fost generat",
 		generateFirst: "Mergi la Generează pentru a crea un orar",
+		selectedActivity: "Selectat",
+		moveHint: "Apasă pe altă celulă pentru a muta",
+		lock: "Blochează",
+		unlock: "Deblochează",
+		deselect: "Deselectează",
 	},
 	availability: {
 		available: "Disponibil",

@@ -196,6 +196,11 @@ const ru: MessageCatalog = {
 		period: "Урок",
 		noScheduleGenerated: "Расписание ещё не сгенерировано",
 		generateFirst: "Перейдите в Генерация, чтобы создать расписание",
+		selectedActivity: "Выбрано",
+		moveHint: "Нажмите на другую ячейку, чтобы переместить",
+		lock: "Закрепить",
+		unlock: "Открепить",
+		deselect: "Снять выбор",
 	},
 	availability: {
 		available: "Доступно",
