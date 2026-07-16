@@ -1,3 +1,4 @@
+import type { Assignment } from "@orar/domain"
 import {
 	createActivity,
 	createAvailabilityRule,
@@ -282,6 +283,36 @@ describe("Generation", () => {
 		expect(result.placedCount).toBe(result.totalCount)
 		expect(result.assignments.length).toBe(result.totalCount)
 	})
+
+	it("reports activity ids that could not be placed", () => {
+		const calendar = createCalendar({
+			name: "Cal",
+			activeDays: ["monday"],
+			periodsPerDay: 1,
+		})
+		const teacher = createTeacher({ name: "T", shortName: "T" })
+		const cls = createClass({ name: "9A", shortName: "9A" })
+		const group = createClassGroup({ classId: cls.id, name: "All", shortName: "ALL" })
+		const math = createActivity({
+			name: "Math",
+			subjectName: "Math",
+			teacherIds: [teacher.id],
+			classGroupIds: [group.id],
+		})
+		const bio = createActivity({
+			name: "Bio",
+			subjectName: "Bio",
+			teacherIds: [teacher.id],
+			classGroupIds: [group.id],
+		})
+
+		const problem = prepareProblem(calendar, [math, bio], [teacher], [group], [], [])
+		const result = generate(problem, undefined, undefined, { seed: 1 })
+
+		expect(result.placedCount).toBe(1)
+		expect(result.unplacedActivityIds).toHaveLength(1)
+		expect([math.id, bio.id]).toContain(result.unplacedActivityIds[0])
+	})
 })
 
 describe("Fitness scoring", () => {
@@ -305,5 +336,51 @@ describe("Fitness scoring", () => {
 		const project = buildSmallSchool()
 		const fitness = computeFitness(project, [])
 		expect(fitness).toBe(0)
+	})
+
+	it("computeFitness penalizes hard constraint violations", () => {
+		const institution = createInstitution({ name: "S", type: "school" })
+		const calendar = createCalendar({
+			name: "Cal",
+			activeDays: ["monday"],
+			periodsPerDay: 4,
+		})
+		const project = createScheduleProject({
+			name: "P",
+			calendar,
+			institution,
+			institutionId: institution.id,
+		})
+		const teacher = createTeacher({ name: "T", shortName: "T" })
+		const cls = createClass({ name: "9A", shortName: "9A" })
+		const group = createClassGroup({ classId: cls.id, name: "All", shortName: "ALL" })
+		project.teachers.push(teacher)
+		project.classes.push(cls)
+		project.classGroups.push(group)
+		const math = createActivity({
+			name: "Math",
+			subjectName: "Math",
+			teacherIds: [teacher.id],
+			classGroupIds: [group.id],
+		})
+		const bio = createActivity({
+			name: "Bio",
+			subjectName: "Bio",
+			teacherIds: [teacher.id],
+			classGroupIds: [group.id],
+		})
+		project.activities.push(math, bio)
+
+		const clean: Assignment[] = [
+			{ activityId: math.id, timeSlot: { day: "monday", period: 0 }, locked: false, duration: 1 },
+			{ activityId: bio.id, timeSlot: { day: "monday", period: 1 }, locked: false, duration: 1 },
+		]
+		const overlapping: Assignment[] = [
+			{ activityId: math.id, timeSlot: { day: "monday", period: 0 }, locked: false, duration: 1 },
+			{ activityId: bio.id, timeSlot: { day: "monday", period: 0 }, locked: false, duration: 1 },
+		]
+
+		expect(computeFitness(project, clean)).toBe(100)
+		expect(computeFitness(project, overlapping)).toBeLessThan(computeFitness(project, clean))
 	})
 })

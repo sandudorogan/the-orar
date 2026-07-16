@@ -7,6 +7,7 @@ export interface GenerationResult {
 	fitness: number
 	placedCount: number
 	totalCount: number
+	unplacedActivityIds: string[]
 }
 
 export interface GenerationOptions {
@@ -21,6 +22,7 @@ export function generate(
 ): GenerationResult {
 	const total = problem.activities.length
 	const assignments: Assignment[] = []
+	const unplacedActivityIds: string[] = []
 	const random = options.seed === undefined ? Math.random : createSeededRandom(options.seed)
 
 	const teacherSlotUsed = new Map<string, Set<string>>()
@@ -36,6 +38,7 @@ export function generate(
 		const slot = pickBestSlot(prepared, teacherSlotUsed, groupSlotUsed, roomSlotUsed, random)
 		if (!slot) {
 			softPenalty += 100
+			unplacedActivityIds.push(prepared.activity.id)
 			continue
 		}
 
@@ -72,7 +75,13 @@ export function generate(
 	}
 
 	const fitness = (placed / Math.max(total, 1)) * 100 - softPenalty * 0.01
-	return { assignments, fitness: Math.max(0, fitness), placedCount: placed, totalCount: total }
+	return {
+		assignments,
+		fitness: Math.max(0, fitness),
+		placedCount: placed,
+		totalCount: total,
+		unplacedActivityIds,
+	}
 }
 
 function pickBestSlot(
