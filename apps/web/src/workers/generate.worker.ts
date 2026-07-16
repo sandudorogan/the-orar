@@ -15,7 +15,7 @@ self.onmessage = async (event: MessageEvent<SolverRequest>) => {
 	if (msg.type === "start") {
 		cancelled = false
 		try {
-			await runGeneration(msg.project, msg.config)
+			await runGeneration(msg.project, msg.config, msg.lockedAssignments)
 		} catch (error) {
 			post({ type: "failed", reason: error instanceof Error ? error.message : String(error) })
 		}
@@ -28,7 +28,11 @@ interface BestResult {
 	unplacedActivityIds: string[]
 }
 
-async function runGeneration(project: ScheduleProject, config: SolverConfig): Promise<void> {
+async function runGeneration(
+	project: ScheduleProject,
+	config: SolverConfig,
+	lockedAssignments: Assignment[],
+): Promise<void> {
 	const problem = prepareProblem(
 		project.calendar,
 		project.activities,
@@ -63,13 +67,17 @@ async function runGeneration(project: ScheduleProject, config: SolverConfig): Pr
 				}
 			},
 			() => cancelled,
-			{ seed: config.seed === undefined ? undefined : config.seed + attempt },
+			{
+				seed: config.seed === undefined ? undefined : config.seed + attempt,
+				lockedAssignments,
+			},
 		)
 
-		const fitness = computeFitness(project, result.assignments)
+		const merged = [...lockedAssignments, ...result.assignments]
+		const fitness = computeFitness(project, merged)
 		if (!best || fitness > best.fitness) {
 			best = {
-				assignments: result.assignments,
+				assignments: merged,
 				fitness,
 				unplacedActivityIds: result.unplacedActivityIds,
 			}

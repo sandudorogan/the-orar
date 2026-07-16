@@ -1,7 +1,12 @@
 import type { Assignment, ScheduleProject } from "@orar/domain"
 
 export type SolverRequest =
-	| { type: "start"; project: ScheduleProject; config: SolverConfig }
+	| {
+			type: "start"
+			project: ScheduleProject
+			config: SolverConfig
+			lockedAssignments: Assignment[]
+	  }
 	| { type: "cancel" }
 
 export type SolverResponse =

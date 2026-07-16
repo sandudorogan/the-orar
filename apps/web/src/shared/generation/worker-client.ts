@@ -1,4 +1,4 @@
-import type { ScheduleProject } from "@orar/domain"
+import type { Assignment, ScheduleProject } from "@orar/domain"
 import type { SolverConfig, SolverResponse } from "@orar/solver"
 import { DEFAULT_SOLVER_CONFIG } from "@orar/solver"
 
@@ -12,6 +12,7 @@ export class GenerationClient {
 		project: ScheduleProject,
 		callback: GenerationCallback,
 		config: SolverConfig = DEFAULT_SOLVER_CONFIG,
+		lockedAssignments: Assignment[] = [],
 	): void {
 		this.cancel()
 		this.worker = new Worker(new URL("../../workers/generate.worker.ts", import.meta.url), {
@@ -27,7 +28,7 @@ export class GenerationClient {
 				this.cleanup()
 			}
 		}
-		this.worker.postMessage({ type: "start", project, config })
+		this.worker.postMessage({ type: "start", project, config, lockedAssignments })
 	}
 
 	cancel(): void {

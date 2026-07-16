@@ -12,6 +12,7 @@ export interface GenerationResult {
 
 export interface GenerationOptions {
 	seed?: number
+	lockedAssignments?: Assignment[]
 }
 
 interface SlotUsage {
@@ -29,7 +30,6 @@ export function generate(
 	shouldCancel?: () => boolean,
 	options: GenerationOptions = {},
 ): GenerationResult {
-	const total = problem.activities.length
 	const assignments: Assignment[] = []
 	const unplacedActivityIds: string[] = []
 	const random = options.seed === undefined ? Math.random : createSeededRandom(options.seed)
@@ -43,10 +43,45 @@ export function generate(
 		activityDays: new Map(),
 	}
 
+	const lockedAssignments = options.lockedAssignments ?? []
+	const activitiesById = new Map(problem.activities.map((p) => [p.activity.id, p.activity]))
+	for (const locked of lockedAssignments) {
+		const activity = activitiesById.get(locked.activityId)
+		if (!activity) continue
+		const spanKeys = timeSlotKeysForSpan(locked.timeSlot, locked.duration ?? 1)
+		for (const teacherId of activity.teacherIds) addUsed(usage.teacher, teacherId, spanKeys)
+		for (const groupId of activity.classGroupIds) {
+			addUsed(usage.group, groupId, spanKeys)
+			const group = problem.groupsById.get(groupId)
+			if (!group) continue
+			addUsed(usage.classAny, group.classId, spanKeys)
+			if (group.isWholeClass) addUsed(usage.classWhole, group.classId, spanKeys)
+		}
+		if (locked.roomId) addUsed(usage.room, locked.roomId, spanKeys)
+		const days = usage.activityDays.get(locked.activityId) ?? new Set()
+		days.add(locked.timeSlot.day)
+		usage.activityDays.set(locked.activityId, days)
+	}
+
+	const lockedCounts = new Map<string, number>()
+	for (const locked of lockedAssignments) {
+		lockedCounts.set(locked.activityId, (lockedCounts.get(locked.activityId) ?? 0) + 1)
+	}
+	const remaining: PreparedActivity[] = []
+	for (const prepared of problem.activities) {
+		const count = lockedCounts.get(prepared.activity.id) ?? 0
+		if (count > 0) {
+			lockedCounts.set(prepared.activity.id, count - 1)
+			continue
+		}
+		remaining.push(prepared)
+	}
+
+	const total = remaining.length
 	let placed = 0
 	let softPenalty = 0
 
-	for (const prepared of problem.activities) {
+	for (const prepared of remaining) {
 		if (shouldCancel?.()) break
 
 		const slot = pickBestSlot(prepared, problem, usage, random)

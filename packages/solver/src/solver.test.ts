@@ -313,6 +313,39 @@ describe("Generation", () => {
 		expect(result.unplacedActivityIds).toHaveLength(1)
 		expect([math.id, bio.id]).toContain(result.unplacedActivityIds[0])
 	})
+
+	it("keeps locked assignments' slots blocked and skips their parts", () => {
+		const calendar = createCalendar({ name: "Cal", activeDays: ["monday"], periodsPerDay: 2 })
+		const teacher = createTeacher({ name: "T", shortName: "T" })
+		const cls = createClass({ name: "9A", shortName: "9A" })
+		const group = createClassGroup({ classId: cls.id, name: "All", shortName: "ALL" })
+		const math = createActivity({
+			name: "Math",
+			subjectName: "Math",
+			teacherIds: [teacher.id],
+			classGroupIds: [group.id],
+		})
+		const bio = createActivity({
+			name: "Bio",
+			subjectName: "Bio",
+			teacherIds: [teacher.id],
+			classGroupIds: [group.id],
+		})
+
+		const problem = prepareProblem(calendar, [math, bio], [teacher], [group], [], [])
+		const locked: Assignment = {
+			activityId: math.id,
+			timeSlot: { day: "monday", period: 0 },
+			locked: true,
+			duration: 1,
+		}
+		const result = generate(problem, undefined, undefined, { seed: 5, lockedAssignments: [locked] })
+
+		expect(result.totalCount).toBe(1)
+		expect(result.assignments).toHaveLength(1)
+		expect(result.assignments[0]!.activityId).toBe(bio.id)
+		expect(result.assignments[0]!.timeSlot.period).toBe(1)
+	})
 })
 
 describe("Fitness scoring", () => {

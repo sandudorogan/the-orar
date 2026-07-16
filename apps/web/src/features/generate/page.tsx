@@ -57,7 +57,7 @@ const initialState: GenerationState = {
 
 export function GeneratePage() {
 	const messages = useMessages()
-	const { project, setAssignments: setGlobalAssignments } = useProject()
+	const { project, assignments, setAssignments: setGlobalAssignments } = useProject()
 	const clientRef = useRef<GenerationClient | null>(null)
 
 	const [state, setState] = useState<GenerationState>(initialState)
@@ -127,7 +127,12 @@ export function GeneratePage() {
 		setState({ ...initialState, status: "running" })
 		const client = new GenerationClient()
 		clientRef.current = client
-		client.start(project, handleResponse, config)
+		client.start(
+			project,
+			handleResponse,
+			config,
+			assignments.filter((a) => a.locked),
+		)
 	}
 
 	function handleCancel() {
