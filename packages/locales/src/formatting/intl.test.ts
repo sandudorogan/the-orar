@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { formatDate, formatNumber, formatTime } from "./intl.ts"
+import { formatDate, formatNumber, formatTime, translateDayNameShort } from "./intl.ts"
 
 describe("intl formatting", () => {
 	it("formats a date in en locale", () => {
@@ -32,5 +32,11 @@ describe("intl formatting", () => {
 		const result = formatNumber(1234.5, "en")
 		expect(result).toContain("1")
 		expect(result).toContain("234")
+	})
+
+	it("translates short day names per locale", () => {
+		expect(translateDayNameShort("monday", "en")).toBe("Mon")
+		expect(translateDayNameShort("monday", "ro").toLowerCase()).toContain("lun")
+		expect(translateDayNameShort("not-a-day", "en")).toBe("not-a-day")
 	})
 })

@@ -173,6 +173,13 @@ export interface MessageCatalog {
 		soft: string
 		unplacedActivities: string
 		unplacedDescription: string
+		conflictTeacherOverlap: string
+		conflictClassOverlap: string
+		conflictRoomOverlap: string
+		conflictUnavailability: string
+		conflictUnplaced: string
+		conflictWorkload: string
+		conflictSpread: string
 	}
 	timetables: {
 		byClass: string

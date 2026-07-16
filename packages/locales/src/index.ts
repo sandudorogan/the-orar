@@ -15,4 +15,5 @@ export {
 	formatDayOfWeek,
 	formatShortDate,
 	translateDayName,
+	translateDayNameShort,
 } from "./formatting/intl.ts"

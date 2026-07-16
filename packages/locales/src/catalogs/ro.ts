@@ -179,6 +179,13 @@ const ro: MessageCatalog = {
 		unplacedActivities: "Activități neplasate",
 		unplacedDescription:
 			"Generatorul nu a găsit un interval pentru aceste activități. Ajustați regulile de disponibilitate sau adăugați resurse, apoi generați din nou.",
+		conflictTeacherOverlap: "Suprapunere profesor",
+		conflictClassOverlap: "Suprapunere clasă",
+		conflictRoomOverlap: "Suprapunere sală",
+		conflictUnavailability: "Interval indisponibil",
+		conflictUnplaced: "Activitate neplasată",
+		conflictWorkload: "Normă depășită",
+		conflictSpread: "Repetare în aceeași zi",
 	},
 	timetables: {
 		byClass: "Per clasă",

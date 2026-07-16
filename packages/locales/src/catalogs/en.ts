@@ -179,6 +179,13 @@ const en: MessageCatalog = {
 		unplacedActivities: "Unplaced activities",
 		unplacedDescription:
 			"The solver could not find a slot for these activities. Adjust availability rules or add resources, then generate again.",
+		conflictTeacherOverlap: "Teacher overlap",
+		conflictClassOverlap: "Class overlap",
+		conflictRoomOverlap: "Room overlap",
+		conflictUnavailability: "Unavailable time",
+		conflictUnplaced: "Unplaced activity",
+		conflictWorkload: "Workload exceeded",
+		conflictSpread: "Same-day repeat",
 	},
 	timetables: {
 		byClass: "By Class",

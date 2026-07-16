@@ -47,3 +47,11 @@ export function translateDayName(day: string, locale: Locale): string {
 	const name = new Intl.DateTimeFormat(locale, { weekday: "long" }).format(date)
 	return name.charAt(0).toUpperCase() + name.slice(1)
 }
+
+export function translateDayNameShort(day: string, locale: Locale): string {
+	const index = DAY_INDEX[day.toLowerCase()]
+	if (index === undefined) return day
+	const date = new Date(2024, 0, 7 + index)
+	const name = new Intl.DateTimeFormat(locale, { weekday: "short" }).format(date)
+	return name.charAt(0).toUpperCase() + name.slice(1)
+}

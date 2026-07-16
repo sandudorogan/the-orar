@@ -1,8 +1,9 @@
-import { useMessages } from "@/app/i18n/use-i18n.ts"
+import { useLocale, useMessages } from "@/app/i18n/use-i18n.ts"
 import { useProject } from "@/app/project-context.tsx"
 import type { AvailabilityRule } from "@orar/domain"
 import type { AvailabilityTarget as AvailabilityTargetValue } from "@orar/domain"
 import type { DayOfWeek as DayOfWeekType, TimeSlot } from "@orar/domain"
+import { translateDayNameShort } from "@orar/locales"
 import {
 	Button,
 	Card,
@@ -32,18 +33,9 @@ import {
 import { Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
 
-const DAY_LABELS: Record<string, string> = {
-	monday: "Mon",
-	tuesday: "Tue",
-	wednesday: "Wed",
-	thursday: "Thu",
-	friday: "Fri",
-	saturday: "Sat",
-	sunday: "Sun",
-}
-
 export function ConstraintsPanel({ embedded = false }: { embedded?: boolean }) {
 	const messages = useMessages()
+	const { locale } = useLocale()
 	const { project, addAvailabilityRule, deleteAvailabilityRule } = useProject()
 	const [dialogOpen, setDialogOpen] = useState(false)
 	const [targetType, setTargetType] = useState<AvailabilityTargetValue>("teacher")
@@ -215,7 +207,7 @@ export function ConstraintsPanel({ embedded = false }: { embedded?: boolean }) {
 												<th className="p-2 text-left text-text-secondary" />
 												{activeDays.map((day) => (
 													<th key={day} className="p-2 text-center text-text-secondary font-medium">
-														{DAY_LABELS[day]}
+														{translateDayNameShort(day, locale)}
 													</th>
 												))}
 											</tr>
@@ -292,9 +284,7 @@ export function ConstraintsPanel({ embedded = false }: { embedded?: boolean }) {
 													: messages.availability.preferred}
 											</span>
 										</TableCell>
-										<TableCell className="text-text-secondary">
-											{rule.timeSlots.length} slot{rule.timeSlots.length !== 1 ? "s" : ""}
-										</TableCell>
+										<TableCell className="text-text-secondary">{rule.timeSlots.length}</TableCell>
 										<TableCell>
 											<Button
 												variant="ghost"
@@ -329,6 +319,7 @@ function AvailabilityGrid({
 	periods: number[]
 }) {
 	const messages = useMessages()
+	const { locale } = useLocale()
 
 	function getSlotStatus(targetType: string, targetId: string, day: DayOfWeekType, period: number) {
 		for (const rule of project.availabilityRules) {
@@ -363,7 +354,7 @@ function AvailabilityGrid({
 									colSpan={periods.length}
 									className="p-1 text-center text-text-secondary font-medium border-l border-border-subtle"
 								>
-									{DAY_LABELS[day]}
+									{translateDayNameShort(day, locale)}
 								</th>
 							))}
 						</tr>

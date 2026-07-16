@@ -1,8 +1,9 @@
-import { useMessages } from "@/app/i18n/use-i18n.ts"
+import { useLocale, useMessages } from "@/app/i18n/use-i18n.ts"
 import { useProject } from "@/app/project-context.tsx"
 import { GenerationClient } from "@/shared/generation/worker-client.ts"
 import type { Assignment, Conflict } from "@orar/domain"
 import { detectConflicts } from "@orar/domain"
+import { translateDayNameShort } from "@orar/locales"
 import type { SolverConfig, SolverResponse } from "@orar/solver"
 import { DEFAULT_SOLVER_CONFIG } from "@orar/solver"
 import {
@@ -401,14 +402,25 @@ function ConflictRow({
 	project: ReturnType<typeof useProject>["project"]
 	messages: ReturnType<typeof useMessages>
 }) {
+	const { locale } = useLocale()
 	const isHard = conflict.severity === "hard"
 	const activityNames = conflict.activityIds
 		.map((id) => project.activities.find((a) => a.id === id)?.name)
 		.filter(Boolean)
 		.join(", ")
 
+	const typeLabels: Record<Conflict["type"], string> = {
+		"teacher-overlap": messages.scheduling.conflictTeacherOverlap,
+		"class-overlap": messages.scheduling.conflictClassOverlap,
+		"room-overlap": messages.scheduling.conflictRoomOverlap,
+		"unavailability-violation": messages.scheduling.conflictUnavailability,
+		"unplaced-activity": messages.scheduling.conflictUnplaced,
+		"workload-violation": messages.scheduling.conflictWorkload,
+		"spread-violation": messages.scheduling.conflictSpread,
+	}
+
 	const timeLabel = conflict.timeSlot
-		? `${conflict.timeSlot.day} P${conflict.timeSlot.period + 1}`
+		? `${translateDayNameShort(conflict.timeSlot.day, locale)} · ${messages.timetables.period} ${conflict.timeSlot.period + 1}`
 		: null
 
 	return (
@@ -437,9 +449,7 @@ function ConflictRow({
 					>
 						{isHard ? messages.scheduling.hard : messages.scheduling.soft}
 					</span>
-					<span className="text-xs text-text-muted capitalize">
-						{conflict.type.replace(/-/g, " ")}
-					</span>
+					<span className="text-xs text-text-muted">{typeLabels[conflict.type]}</span>
 					{timeLabel && (
 						<span className="flex items-center gap-1 text-xs text-text-muted">
 							<Clock className="h-3 w-3" />

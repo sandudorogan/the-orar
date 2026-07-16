@@ -180,6 +180,13 @@ const ru: MessageCatalog = {
 		unplacedActivities: "Неразмещённые занятия",
 		unplacedDescription:
 			"Генератор не нашёл слот для этих занятий. Скорректируйте правила доступности или добавьте ресурсы и запустите генерацию снова.",
+		conflictTeacherOverlap: "Накладка у преподавателя",
+		conflictClassOverlap: "Накладка у класса",
+		conflictRoomOverlap: "Накладка в кабинете",
+		conflictUnavailability: "Недоступное время",
+		conflictUnplaced: "Неразмещённое занятие",
+		conflictWorkload: "Превышена нагрузка",
+		conflictSpread: "Повтор в один день",
 	},
 	timetables: {
 		byClass: "По классу",

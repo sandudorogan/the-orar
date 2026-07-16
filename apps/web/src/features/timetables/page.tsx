@@ -1,4 +1,4 @@
-import { useMessages } from "@/app/i18n/use-i18n.ts"
+import { useLocale, useMessages } from "@/app/i18n/use-i18n.ts"
 import { useProject } from "@/app/project-context.tsx"
 import {
 	detectConflicts,
@@ -7,6 +7,7 @@ import {
 	getAssignmentsForTeacher,
 	timeSlotKey,
 } from "@orar/domain"
+import { translateDayNameShort } from "@orar/locales"
 import type { TimetableCell } from "@orar/ui"
 import {
 	Button,
@@ -33,6 +34,7 @@ type ViewMode = "class" | "teacher" | "classroom"
 
 export function TimetablesPage() {
 	const messages = useMessages()
+	const { locale } = useLocale()
 	const { project, assignments } = useProject()
 	const navigate = useNavigate()
 
@@ -65,7 +67,7 @@ export function TimetablesPage() {
 	const days = project.calendar.activeDays
 	const periods = project.calendar.periodsPerDay
 
-	const dayLabels = days.map((d) => d.charAt(0).toUpperCase() + d.slice(1))
+	const dayLabels = days.map((d) => translateDayNameShort(d, locale))
 
 	const entityOptions = useMemo(() => {
 		switch (viewMode) {
@@ -105,7 +107,7 @@ export function TimetablesPage() {
 
 	const gridCells = useMemo(() => {
 		const memoDays = project.calendar.activeDays
-		const memoDayLabels = memoDays.map((d) => d.charAt(0).toUpperCase() + d.slice(1))
+		const memoDayLabels = memoDays.map((d) => translateDayNameShort(d, locale))
 		const dayToLabel = Object.fromEntries(memoDays.map((d, i) => [d, memoDayLabels[i]!]))
 		const cells = new Map<string, TimetableCell[]>()
 
@@ -167,7 +169,7 @@ export function TimetablesPage() {
 		}
 
 		return cells
-	}, [filteredAssignments, viewMode, project, conflictSlotKeys])
+	}, [filteredAssignments, viewMode, project, conflictSlotKeys, locale])
 
 	function handleTabChange(value: string) {
 		setViewMode(value as ViewMode)

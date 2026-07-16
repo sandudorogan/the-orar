@@ -180,6 +180,13 @@ const pt: MessageCatalog = {
 		unplacedActivities: "Atividades não alocadas",
 		unplacedDescription:
 			"O gerador não encontrou um horário para estas atividades. Ajuste as regras de disponibilidade ou adicione recursos e gere novamente.",
+		conflictTeacherOverlap: "Sobreposição de professor",
+		conflictClassOverlap: "Sobreposição de turma",
+		conflictRoomOverlap: "Sobreposição de sala",
+		conflictUnavailability: "Horário indisponível",
+		conflictUnplaced: "Atividade não alocada",
+		conflictWorkload: "Carga excedida",
+		conflictSpread: "Repetição no mesmo dia",
 	},
 	timetables: {
 		byClass: "Por turma",

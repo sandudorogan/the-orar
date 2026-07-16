@@ -181,6 +181,13 @@ const es: MessageCatalog = {
 		unplacedActivities: "Actividades sin asignar",
 		unplacedDescription:
 			"El generador no encontró un intervalo para estas actividades. Ajusta las reglas de disponibilidad o añade recursos y vuelve a generar.",
+		conflictTeacherOverlap: "Solapamiento de profesor",
+		conflictClassOverlap: "Solapamiento de clase",
+		conflictRoomOverlap: "Solapamiento de aula",
+		conflictUnavailability: "Horario no disponible",
+		conflictUnplaced: "Actividad sin asignar",
+		conflictWorkload: "Carga excedida",
+		conflictSpread: "Repetición el mismo día",
 	},
 	timetables: {
 		byClass: "Por clase",
