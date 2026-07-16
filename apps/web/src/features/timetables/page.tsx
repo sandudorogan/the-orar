@@ -29,7 +29,7 @@ import {
 } from "@orar/ui"
 import { useNavigate } from "@tanstack/react-router"
 import { CalendarDays, DoorOpen, GraduationCap, Lock, LockOpen, Users, X, Zap } from "lucide-react"
-import { useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 type ViewMode = "class" | "teacher" | "classroom"
 
@@ -45,7 +45,7 @@ export function TimetablesPage() {
 	const navigate = useNavigate()
 
 	const [viewMode, setViewMode] = useState<ViewMode>("class")
-	const [selectedId, setSelectedId] = useState<string>("")
+	const [selectedId, setSelectedId] = useState<string>(() => project.classGroups[0]?.id ?? "")
 	const [selected, setSelected] = useState<SelectedRef | null>(null)
 
 	const conflictSlotKeys = useMemo(() => {
@@ -81,28 +81,38 @@ export function TimetablesPage() {
 		[days, dayLabels],
 	)
 
-	const entityOptions = useMemo(() => {
-		switch (viewMode) {
-			case "class":
-				return project.classGroups.map((g) => {
-					const cls = project.classes.find((c) => c.id === g.classId)
-					return {
-						id: g.id,
-						label: cls ? `${cls.shortName} / ${g.shortName}` : g.shortName,
-					}
-				})
-			case "teacher":
-				return project.teachers.map((t) => ({
-					id: t.id,
-					label: t.name,
-				}))
-			case "classroom":
-				return project.classrooms.map((r) => ({
-					id: r.id,
-					label: r.name,
-				}))
-		}
-	}, [viewMode, project])
+	const optionsFor = useCallback(
+		(mode: ViewMode) => {
+			switch (mode) {
+				case "class":
+					return project.classGroups.map((g) => {
+						const cls = project.classes.find((c) => c.id === g.classId)
+						return {
+							id: g.id,
+							label: cls ? `${cls.shortName} / ${g.shortName}` : g.shortName,
+						}
+					})
+				case "teacher":
+					return project.teachers.map((t) => ({
+						id: t.id,
+						label: t.name,
+					}))
+				case "classroom":
+					return project.classrooms.map((r) => ({
+						id: r.id,
+						label: r.name,
+					}))
+			}
+		},
+		[project],
+	)
+
+	const entityOptions = useMemo(() => optionsFor(viewMode), [optionsFor, viewMode])
+
+	useEffect(() => {
+		if (selectedId && entityOptions.some((o) => o.id === selectedId)) return
+		setSelectedId(entityOptions[0]?.id ?? "")
+	}, [entityOptions, selectedId])
 
 	const filteredAssignments = useMemo(() => {
 		if (!selectedId) return []
@@ -250,8 +260,9 @@ export function TimetablesPage() {
 	}, [filteredAssignments, viewMode, project, conflictSlotKeys, locale, selected])
 
 	function handleTabChange(value: string) {
-		setViewMode(value as ViewMode)
-		setSelectedId("")
+		const mode = value as ViewMode
+		setViewMode(mode)
+		setSelectedId(optionsFor(mode)[0]?.id ?? "")
 		setSelected(null)
 	}
 
