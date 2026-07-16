@@ -189,6 +189,7 @@ export function ImportPanel({
 									onChange={(event) => {
 										setCsvText(event.target.value)
 										setResult(null)
+										setErrors([])
 										setImported(false)
 									}}
 									className="min-h-64 w-full resize-y rounded-md border border-border-default bg-surface-panel p-3 font-mono text-xs text-text-primary outline-none focus:border-action-primary"
@@ -196,7 +197,7 @@ export function ImportPanel({
 								/>
 							</label>
 
-							<div className="flex flex-wrap gap-3">
+							<div className="flex flex-wrap items-center gap-3">
 								<Button type="button" onClick={() => validate()} disabled={!csvText.trim()}>
 									<CheckCircle2 className="h-4 w-4" />
 									{messages.importCsv.validate}
@@ -206,6 +207,18 @@ export function ImportPanel({
 										<Clipboard className="h-4 w-4" />
 										{copied ? messages.importCsv.promptCopied : messages.importCsv.copyPrompt}
 									</Button>
+								)}
+								{result && (
+									<span className="flex items-center gap-1.5 text-sm font-medium text-status-generated">
+										<CheckCircle2 className="h-4 w-4" />
+										{messages.importCsv.validTitle}
+									</span>
+								)}
+								{errors.length > 0 && (
+									<span className="flex items-center gap-1.5 text-sm font-medium text-status-conflict">
+										<AlertCircle className="h-4 w-4" />
+										{messages.importCsv.invalidTitle}
+									</span>
 								)}
 							</div>
 						</CardContent>

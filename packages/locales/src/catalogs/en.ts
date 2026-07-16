@@ -229,6 +229,7 @@ const en: MessageCatalog = {
 		copyPrompt: "Copy AI prompt",
 		promptCopied: "Prompt copied",
 		formatTitle: "Required header",
+		validTitle: "CSV is valid",
 		invalidTitle: "CSV needs conversion",
 		invalidDescription:
 			"Fix the listed errors, or copy the AI prompt and ask GPT, Claude, or Gemini to convert your source file into Orar CSV.",

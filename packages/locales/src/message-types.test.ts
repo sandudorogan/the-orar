@@ -227,6 +227,7 @@ describe("message-types", () => {
 				copyPrompt: "Copy AI prompt",
 				promptCopied: "Prompt copied",
 				formatTitle: "Required header",
+				validTitle: "CSV is valid",
 				invalidTitle: "CSV needs conversion",
 				invalidDescription: "Fix the listed errors.",
 				previewTitle: "Import preview",

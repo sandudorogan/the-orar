@@ -230,6 +230,7 @@ const ru: MessageCatalog = {
 		copyPrompt: "Скопировать промпт ИИ",
 		promptCopied: "Промпт скопирован",
 		formatTitle: "Обязательный заголовок",
+		validTitle: "CSV корректен",
 		invalidTitle: "CSV требует преобразования",
 		invalidDescription:
 			"Исправьте перечисленные ошибки или скопируйте промпт ИИ и попросите GPT, Claude или Gemini преобразовать исходный файл в Orar CSV.",

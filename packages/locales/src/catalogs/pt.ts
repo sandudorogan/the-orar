@@ -231,6 +231,7 @@ const pt: MessageCatalog = {
 		copyPrompt: "Copiar prompt de IA",
 		promptCopied: "Prompt copiado",
 		formatTitle: "Cabeçalho obrigatório",
+		validTitle: "CSV válido",
 		invalidTitle: "O CSV precisa de conversão",
 		invalidDescription:
 			"Corrija os erros listados ou copie o prompt de IA e peça ao GPT, Claude ou Gemini para converter seu arquivo de origem em Orar CSV.",

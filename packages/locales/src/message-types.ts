@@ -222,6 +222,7 @@ export interface MessageCatalog {
 		copyPrompt: string
 		promptCopied: string
 		formatTitle: string
+		validTitle: string
 		invalidTitle: string
 		invalidDescription: string
 		previewTitle: string

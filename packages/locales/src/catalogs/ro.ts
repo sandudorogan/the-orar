@@ -230,6 +230,7 @@ const ro: MessageCatalog = {
 		copyPrompt: "Copiază prompt AI",
 		promptCopied: "Prompt copiat",
 		formatTitle: "Antet necesar",
+		validTitle: "CSV valid",
 		invalidTitle: "CSV-ul trebuie convertit",
 		invalidDescription:
 			"Corectează erorile listate sau copiază promptul AI și cere GPT, Claude sau Gemini să convertească fișierul sursă în Orar CSV.",
