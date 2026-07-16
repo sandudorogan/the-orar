@@ -453,4 +453,28 @@ describe("Fitness scoring", () => {
 			expect(count).toBeLessThanOrEqual(2)
 		}
 	})
+
+	it("prefers spreading an activity's sessions across days", () => {
+		const calendar = createCalendar({
+			name: "Cal",
+			activeDays: ["monday", "tuesday", "wednesday"],
+			periodsPerDay: 3,
+		})
+		const teacher = createTeacher({ name: "T", shortName: "T" })
+		const cls = createClass({ name: "9A", shortName: "9A" })
+		const group = createClassGroup({ classId: cls.id, name: "All", shortName: "ALL" })
+		const activity = createActivity({
+			name: "Math",
+			subjectName: "Math",
+			teacherIds: [teacher.id],
+			classGroupIds: [group.id],
+			totalPerWeek: 3,
+		})
+
+		const problem = prepareProblem(calendar, [activity], [teacher], [group], [], [])
+		const result = generate(problem, undefined, undefined, { seed: 11 })
+
+		expect(result.placedCount).toBe(3)
+		expect(new Set(result.assignments.map((a) => a.timeSlot.day)).size).toBe(3)
+	})
 })

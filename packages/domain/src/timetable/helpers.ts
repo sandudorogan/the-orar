@@ -60,6 +60,8 @@ function mapConstraintTypeToConflictType(constraintType: string): Conflict["type
 			return "unavailability-violation"
 		case "teacher-max-hours-per-day":
 			return "workload-violation"
+		case "activity-spread":
+			return "spread-violation"
 		default:
 			return "unplaced-activity"
 	}

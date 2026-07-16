@@ -10,6 +10,7 @@ import { createTeacher } from "../entities/teacher.ts"
 import { createTimeSlot } from "../entities/time-slot.ts"
 import { createActivityPreferredRoom } from "./activity-preferred-room.ts"
 import { createActivityPreferredTime } from "./activity-preferred-time.ts"
+import { createActivitySpread } from "./activity-spread.ts"
 import { createNoClassOverlap } from "./no-overlap.ts"
 import { createDefaultRegistry } from "./registry.ts"
 import { createTeacherMaxHoursPerDay } from "./teacher-max-hours.ts"
@@ -495,5 +496,48 @@ describe("teacher-max-hours-per-day", () => {
 		const violations = createTeacherMaxHoursPerDay().evaluate(context)
 		expect(violations).toHaveLength(1)
 		expect(violations[0]!.weight).toBe("hard")
+	})
+})
+
+describe("activity-spread", () => {
+	it("flags repeated sessions of an activity on the same day as a soft violation", () => {
+		const calendar = createCalendar({ name: "Cal", activeDays: ["monday"], periodsPerDay: 4 })
+		const teacher = createTeacher({ name: "T", shortName: "T" })
+		const cls = createClass({ name: "9A", shortName: "9A" })
+		const group = createClassGroup({ classId: cls.id, name: "All", shortName: "ALL" })
+		const activity = createActivity({
+			name: "Math",
+			subjectName: "Math",
+			teacherIds: [teacher.id],
+			classGroupIds: [group.id],
+			totalPerWeek: 2,
+		})
+		const context: ScheduleContext = {
+			calendar,
+			classes: [cls],
+			classGroups: [group],
+			teachers: [teacher],
+			classrooms: [],
+			activities: [activity],
+			availabilityRules: [],
+			assignments: [
+				{
+					activityId: activity.id,
+					timeSlot: { day: "monday", period: 0 },
+					locked: false,
+					duration: 1,
+				},
+				{
+					activityId: activity.id,
+					timeSlot: { day: "monday", period: 2 },
+					locked: false,
+					duration: 1,
+				},
+			],
+		}
+
+		const violations = createActivitySpread().evaluate(context)
+		expect(violations).toHaveLength(1)
+		expect(violations[0]!.weight).toBe("soft")
 	})
 })

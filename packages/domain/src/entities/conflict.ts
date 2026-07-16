@@ -8,6 +8,7 @@ export const ConflictType = z.enum([
 	"unavailability-violation",
 	"unplaced-activity",
 	"workload-violation",
+	"spread-violation",
 ])
 export type ConflictType = z.infer<typeof ConflictType>
 

@@ -20,6 +20,7 @@ interface SlotUsage {
 	classWhole: Map<string, Set<string>>
 	classAny: Map<string, Set<string>>
 	room: Map<string, Set<string>>
+	activityDays: Map<string, Set<string>>
 }
 
 export function generate(
@@ -39,6 +40,7 @@ export function generate(
 		classWhole: new Map(),
 		classAny: new Map(),
 		room: new Map(),
+		activityDays: new Map(),
 	}
 
 	let placed = 0
@@ -99,6 +101,10 @@ function markUsed(
 		if (group.isWholeClass) addUsed(usage.classWhole, group.classId, spanKeys)
 	}
 	if (roomId) addUsed(usage.room, roomId, spanKeys)
+
+	const days = usage.activityDays.get(prepared.activity.id) ?? new Set()
+	days.add(slot.day)
+	usage.activityDays.set(prepared.activity.id, days)
 }
 
 function addUsed(map: Map<string, Set<string>>, id: string, keys: string[]): void {
@@ -150,6 +156,10 @@ function pickBestSlot(
 		}
 
 		score -= countUsedNeighbors(slot, prepared.activity.teacherIds, usage.teacher) * 2
+
+		if (usage.activityDays.get(prepared.activity.id)?.has(slot.day)) {
+			score -= 5
+		}
 
 		return { slot, score }
 	})
