@@ -109,6 +109,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 	const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
 	useEffect(() => {
+		void navigator.storage?.persist?.()
 		getAllProjects().then(async (projects) => {
 			const existing = projects[0]
 			if (existing) {

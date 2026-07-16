@@ -1,12 +1,11 @@
 const DB_NAME = "orar"
-const DB_VERSION = 1
+const DB_VERSION = 2
 
 export const STORES = {
 	projects: "projects",
 	schedules: "schedules",
 	generationRuns: "generationRuns",
 	settings: "settings",
-	history: "history",
 } as const
 
 export function openDb(): Promise<IDBDatabase> {
@@ -15,26 +14,26 @@ export function openDb(): Promise<IDBDatabase> {
 
 		request.onupgradeneeded = (event) => {
 			const db = (event.target as IDBOpenDBRequest).result
+			const oldVersion = event.oldVersion
 
-			if (!db.objectStoreNames.contains(STORES.projects)) {
+			if (oldVersion < 1) {
 				db.createObjectStore(STORES.projects, { keyPath: "id" })
-			}
-			if (!db.objectStoreNames.contains(STORES.schedules)) {
-				const store = db.createObjectStore(STORES.schedules, { keyPath: "id" })
-				store.createIndex("projectId", "projectId", { unique: false })
-			}
-			if (!db.objectStoreNames.contains(STORES.generationRuns)) {
-				const store = db.createObjectStore(STORES.generationRuns, { keyPath: "id" })
-				store.createIndex("projectId", "projectId", { unique: false })
-			}
-			if (!db.objectStoreNames.contains(STORES.settings)) {
+				const schedules = db.createObjectStore(STORES.schedules, { keyPath: "id" })
+				schedules.createIndex("projectId", "projectId", { unique: false })
+				const runs = db.createObjectStore(STORES.generationRuns, { keyPath: "id" })
+				runs.createIndex("projectId", "projectId", { unique: false })
 				db.createObjectStore(STORES.settings, { keyPath: "key" })
 			}
-			if (!db.objectStoreNames.contains(STORES.history)) {
-				const store = db.createObjectStore(STORES.history, { keyPath: "id", autoIncrement: true })
-				store.createIndex("projectId", "projectId", { unique: false })
-				store.createIndex("timestamp", "timestamp", { unique: false })
+
+			if (oldVersion < 2) {
+				if (db.objectStoreNames.contains("history")) {
+					db.deleteObjectStore("history")
+				}
 			}
+		}
+
+		request.onblocked = () => {
+			reject(new Error("Database upgrade blocked by another open tab"))
 		}
 
 		request.onsuccess = () => resolve(request.result)
