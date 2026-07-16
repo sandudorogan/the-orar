@@ -175,6 +175,8 @@ describe("message-types", () => {
 				severity: "Severity",
 				hard: "Hard",
 				soft: "Soft",
+				unplacedActivities: "Unplaced activities",
+				unplacedDescription: "The solver could not find a slot for these activities.",
 			},
 			timetables: {
 				byClass: "By Class",

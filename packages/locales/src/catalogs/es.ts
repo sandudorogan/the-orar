@@ -177,6 +177,9 @@ const es: MessageCatalog = {
 		severity: "Gravedad",
 		hard: "Grave",
 		soft: "Leve",
+		unplacedActivities: "Actividades sin asignar",
+		unplacedDescription:
+			"El generador no encontró un intervalo para estas actividades. Ajusta las reglas de disponibilidad o añade recursos y vuelve a generar.",
 	},
 	timetables: {
 		byClass: "Por clase",

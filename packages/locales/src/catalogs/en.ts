@@ -175,6 +175,9 @@ const en: MessageCatalog = {
 		severity: "Severity",
 		hard: "Hard",
 		soft: "Soft",
+		unplacedActivities: "Unplaced activities",
+		unplacedDescription:
+			"The solver could not find a slot for these activities. Adjust availability rules or add resources, then generate again.",
 	},
 	timetables: {
 		byClass: "By Class",

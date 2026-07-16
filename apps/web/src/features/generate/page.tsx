@@ -38,6 +38,7 @@ interface GenerationState {
 	fitness: number | null
 	assignments: Assignment[]
 	conflicts: Conflict[]
+	unplacedActivityIds: string[]
 	errorMessage: string | null
 }
 
@@ -49,6 +50,7 @@ const initialState: GenerationState = {
 	fitness: null,
 	assignments: [],
 	conflicts: [],
+	unplacedActivityIds: [],
 	errorMessage: null,
 }
 
@@ -98,6 +100,7 @@ export function GeneratePage() {
 						placedCount: response.assignments.length,
 						progress: 1,
 						conflicts,
+						unplacedActivityIds: response.unplacedActivityIds,
 					}))
 					break
 				}
@@ -303,6 +306,40 @@ export function GeneratePage() {
 									messages={messages}
 								/>
 							))}
+						</div>
+					</CardContent>
+				</Card>
+			)}
+
+			{isComplete && state.unplacedActivityIds.length > 0 && (
+				<Card>
+					<CardHeader>
+						<CardTitle className="flex items-center gap-2">
+							<AlertTriangle className="h-5 w-5 text-status-unplaced" />
+							{messages.scheduling.unplacedActivities}
+						</CardTitle>
+						<CardDescription>{messages.scheduling.unplacedDescription}</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<div className="space-y-2">
+							{[...new Map(state.unplacedActivityIds.map((id) => [id, 0])).keys()].map((id) => {
+								const activity = project.activities.find((a) => a.id === id)
+								const count = state.unplacedActivityIds.filter((x) => x === id).length
+								return (
+									<div
+										key={id}
+										className="flex items-center justify-between rounded-md border border-border-subtle bg-status-unplaced-bg px-3 py-2"
+									>
+										<span className="text-sm text-text-primary">
+											{activity?.name ?? id}
+											{activity && (
+												<span className="ml-2 text-xs text-text-muted">{activity.subjectName}</span>
+											)}
+										</span>
+										<span className="text-xs font-medium text-status-unplaced">×{count}</span>
+									</div>
+								)
+							})}
 						</div>
 					</CardContent>
 				</Card>

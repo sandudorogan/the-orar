@@ -170,6 +170,8 @@ export interface MessageCatalog {
 		severity: string
 		hard: string
 		soft: string
+		unplacedActivities: string
+		unplacedDescription: string
 	}
 	timetables: {
 		byClass: string

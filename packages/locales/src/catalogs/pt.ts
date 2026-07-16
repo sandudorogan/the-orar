@@ -176,6 +176,9 @@ const pt: MessageCatalog = {
 		severity: "Gravidade",
 		hard: "Grave",
 		soft: "Leve",
+		unplacedActivities: "Atividades não alocadas",
+		unplacedDescription:
+			"O gerador não encontrou um horário para estas atividades. Ajuste as regras de disponibilidade ou adicione recursos e gere novamente.",
 	},
 	timetables: {
 		byClass: "Por turma",

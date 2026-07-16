@@ -175,6 +175,9 @@ const ro: MessageCatalog = {
 		severity: "Severitate",
 		hard: "Major",
 		soft: "Minor",
+		unplacedActivities: "Activități neplasate",
+		unplacedDescription:
+			"Generatorul nu a găsit un interval pentru aceste activități. Ajustați regulile de disponibilitate sau adăugați resurse, apoi generați din nou.",
 	},
 	timetables: {
 		byClass: "Per clasă",
