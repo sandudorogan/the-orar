@@ -10,6 +10,7 @@ import { createTeacher } from "../entities/teacher.ts"
 import { createTimeSlot } from "../entities/time-slot.ts"
 import { createActivityPreferredRoom } from "./activity-preferred-room.ts"
 import { createActivityPreferredTime } from "./activity-preferred-time.ts"
+import { createNoClassOverlap } from "./no-overlap.ts"
 import { createDefaultRegistry } from "./registry.ts"
 import type { ScheduleContext } from "./types.ts"
 
@@ -375,5 +376,87 @@ describe("Registry", () => {
 		const registry = createDefaultRegistry()
 		const violations = registry.evaluateAll(context)
 		expect(violations).toHaveLength(0)
+	})
+})
+
+describe("no-class-overlap with whole-class groups", () => {
+	function buildContext() {
+		const calendar = createCalendar({ name: "Cal", activeDays: ["monday"], periodsPerDay: 4 })
+		const cls = createClass({ name: "9A", shortName: "9A" })
+		const whole = createClassGroup({
+			classId: cls.id,
+			name: "All",
+			shortName: "ALL",
+			isWholeClass: true,
+		})
+		const sub1 = createClassGroup({ classId: cls.id, name: "Sci", shortName: "SCI" })
+		const sub2 = createClassGroup({ classId: cls.id, name: "Arts", shortName: "ART" })
+		const t1 = createTeacher({ name: "T1", shortName: "T1" })
+		const t2 = createTeacher({ name: "T2", shortName: "T2" })
+		return { calendar, cls, whole, sub1, sub2, t1, t2 }
+	}
+
+	it("flags a whole-class group overlapping a subgroup of the same class", () => {
+		const { calendar, cls, whole, sub1, sub2, t1, t2 } = buildContext()
+		const a1 = createActivity({
+			name: "Math",
+			subjectName: "Math",
+			teacherIds: [t1.id],
+			classGroupIds: [whole.id],
+		})
+		const a2 = createActivity({
+			name: "Bio",
+			subjectName: "Bio",
+			teacherIds: [t2.id],
+			classGroupIds: [sub1.id],
+		})
+		const context: ScheduleContext = {
+			calendar,
+			classes: [cls],
+			classGroups: [whole, sub1, sub2],
+			teachers: [t1, t2],
+			classrooms: [],
+			activities: [a1, a2],
+			availabilityRules: [],
+			assignments: [
+				{ activityId: a1.id, timeSlot: { day: "monday", period: 0 }, locked: false, duration: 1 },
+				{ activityId: a2.id, timeSlot: { day: "monday", period: 0 }, locked: false, duration: 1 },
+			],
+		}
+
+		const violations = createNoClassOverlap().evaluate(context)
+		expect(violations).toHaveLength(1)
+		expect(violations[0]!.activityIds).toEqual(expect.arrayContaining([a1.id, a2.id]))
+	})
+
+	it("allows two sibling subgroups at the same time", () => {
+		const { calendar, cls, whole, sub1, sub2, t1, t2 } = buildContext()
+		const a1 = createActivity({
+			name: "Chem",
+			subjectName: "Chem",
+			teacherIds: [t1.id],
+			classGroupIds: [sub1.id],
+		})
+		const a2 = createActivity({
+			name: "Art",
+			subjectName: "Art",
+			teacherIds: [t2.id],
+			classGroupIds: [sub2.id],
+		})
+		const context: ScheduleContext = {
+			calendar,
+			classes: [cls],
+			classGroups: [whole, sub1, sub2],
+			teachers: [t1, t2],
+			classrooms: [],
+			activities: [a1, a2],
+			availabilityRules: [],
+			assignments: [
+				{ activityId: a1.id, timeSlot: { day: "monday", period: 0 }, locked: false, duration: 1 },
+				{ activityId: a2.id, timeSlot: { day: "monday", period: 0 }, locked: false, duration: 1 },
+			],
+		}
+
+		expect(createNoClassOverlap().evaluate(context)).toHaveLength(0)
 	})
 })

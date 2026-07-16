@@ -14,6 +14,14 @@ export interface GenerationOptions {
 	seed?: number
 }
 
+interface SlotUsage {
+	teacher: Map<string, Set<string>>
+	group: Map<string, Set<string>>
+	classWhole: Map<string, Set<string>>
+	classAny: Map<string, Set<string>>
+	room: Map<string, Set<string>>
+}
+
 export function generate(
 	problem: PreparedProblem,
 	onProgress?: (placed: number, total: number) => void,
@@ -25,9 +33,13 @@ export function generate(
 	const unplacedActivityIds: string[] = []
 	const random = options.seed === undefined ? Math.random : createSeededRandom(options.seed)
 
-	const teacherSlotUsed = new Map<string, Set<string>>()
-	const groupSlotUsed = new Map<string, Set<string>>()
-	const roomSlotUsed = new Map<string, Set<string>>()
+	const usage: SlotUsage = {
+		teacher: new Map(),
+		group: new Map(),
+		classWhole: new Map(),
+		classAny: new Map(),
+		room: new Map(),
+	}
 
 	let placed = 0
 	let softPenalty = 0
@@ -35,40 +47,24 @@ export function generate(
 	for (const prepared of problem.activities) {
 		if (shouldCancel?.()) break
 
-		const slot = pickBestSlot(prepared, teacherSlotUsed, groupSlotUsed, roomSlotUsed, random)
+		const slot = pickBestSlot(prepared, problem, usage, random)
 		if (!slot) {
 			softPenalty += 100
 			unplacedActivityIds.push(prepared.activity.id)
 			continue
 		}
 
-		const room = pickRoom(prepared, slot, roomSlotUsed)
+		const room = pickRoom(prepared, slot, usage.room)
 
-		const assignment: Assignment = {
+		assignments.push({
 			activityId: prepared.activity.id,
 			timeSlot: slot,
 			roomId: room?.id,
 			locked: false,
 			duration: prepared.duration,
-		}
-		assignments.push(assignment)
+		})
 
-		const spanKeys = timeSlotKeysForSpan(slot, prepared.duration)
-		for (const teacherId of prepared.activity.teacherIds) {
-			const used = teacherSlotUsed.get(teacherId) ?? new Set()
-			for (const k of spanKeys) used.add(k)
-			teacherSlotUsed.set(teacherId, used)
-		}
-		for (const groupId of prepared.activity.classGroupIds) {
-			const used = groupSlotUsed.get(groupId) ?? new Set()
-			for (const k of spanKeys) used.add(k)
-			groupSlotUsed.set(groupId, used)
-		}
-		if (room) {
-			const used = roomSlotUsed.get(room.id) ?? new Set()
-			for (const k of spanKeys) used.add(k)
-			roomSlotUsed.set(room.id, used)
-		}
+		markUsed(prepared, problem, usage, slot, room?.id)
 
 		placed++
 		onProgress?.(placed, total)
@@ -84,11 +80,37 @@ export function generate(
 	}
 }
 
+function markUsed(
+	prepared: PreparedActivity,
+	problem: PreparedProblem,
+	usage: SlotUsage,
+	slot: TimeSlot,
+	roomId: string | undefined,
+): void {
+	const spanKeys = timeSlotKeysForSpan(slot, prepared.duration)
+	for (const teacherId of prepared.activity.teacherIds) {
+		addUsed(usage.teacher, teacherId, spanKeys)
+	}
+	for (const groupId of prepared.activity.classGroupIds) {
+		addUsed(usage.group, groupId, spanKeys)
+		const group = problem.groupsById.get(groupId)
+		if (!group) continue
+		addUsed(usage.classAny, group.classId, spanKeys)
+		if (group.isWholeClass) addUsed(usage.classWhole, group.classId, spanKeys)
+	}
+	if (roomId) addUsed(usage.room, roomId, spanKeys)
+}
+
+function addUsed(map: Map<string, Set<string>>, id: string, keys: string[]): void {
+	const used = map.get(id) ?? new Set()
+	for (const k of keys) used.add(k)
+	map.set(id, used)
+}
+
 function pickBestSlot(
 	prepared: PreparedActivity,
-	teacherUsed: Map<string, Set<string>>,
-	groupUsed: Map<string, Set<string>>,
-	roomUsed: Map<string, Set<string>>,
+	problem: PreparedProblem,
+	usage: SlotUsage,
 	random: () => number,
 ): TimeSlot | null {
 	const candidates = prepared.availableSlots.filter((slot) => {
@@ -96,10 +118,14 @@ function pickBestSlot(
 
 		for (const key of spanKeys) {
 			for (const teacherId of prepared.activity.teacherIds) {
-				if (teacherUsed.get(teacherId)?.has(key)) return false
+				if (usage.teacher.get(teacherId)?.has(key)) return false
 			}
 			for (const groupId of prepared.activity.classGroupIds) {
-				if (groupUsed.get(groupId)?.has(key)) return false
+				if (usage.group.get(groupId)?.has(key)) return false
+				const group = problem.groupsById.get(groupId)
+				if (!group) continue
+				if (usage.classWhole.get(group.classId)?.has(key)) return false
+				if (group.isWholeClass && usage.classAny.get(group.classId)?.has(key)) return false
 			}
 		}
 
@@ -112,11 +138,11 @@ function pickBestSlot(
 		let score = 0
 		const spanKeys = timeSlotKeysForSpan(slot, prepared.duration)
 
-		if (prepared.compatibleRooms.some((r) => !spanKeys.some((k) => roomUsed.get(r.id)?.has(k)))) {
+		if (prepared.compatibleRooms.some((r) => !spanKeys.some((k) => usage.room.get(r.id)?.has(k)))) {
 			score += 10
 		}
 
-		score -= countUsedNeighbors(slot, prepared.activity.teacherIds, teacherUsed) * 2
+		score -= countUsedNeighbors(slot, prepared.activity.teacherIds, usage.teacher) * 2
 
 		return { slot, score }
 	})

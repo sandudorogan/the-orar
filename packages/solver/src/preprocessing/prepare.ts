@@ -13,6 +13,7 @@ export interface PreparedProblem {
 	activities: PreparedActivity[]
 	allSlots: TimeSlot[]
 	slotCount: number
+	groupsById: Map<string, ClassGroup>
 }
 
 export interface PreparedActivity {
@@ -55,6 +56,7 @@ export function prepareProblem(
 		activities: prepared,
 		allSlots,
 		slotCount: allSlots.length,
+		groupsById: new Map(classGroups.map((g) => [g.id, g])),
 	}
 }
 

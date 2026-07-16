@@ -383,4 +383,44 @@ describe("Fitness scoring", () => {
 		expect(computeFitness(project, clean)).toBe(100)
 		expect(computeFitness(project, overlapping)).toBeLessThan(computeFitness(project, clean))
 	})
+
+	it("does not co-schedule a whole-class group with its subgroups", () => {
+		const calendar = createCalendar({ name: "Cal", activeDays: ["monday"], periodsPerDay: 2 })
+		const cls = createClass({ name: "9A", shortName: "9A" })
+		const whole = createClassGroup({
+			classId: cls.id,
+			name: "All",
+			shortName: "ALL",
+			isWholeClass: true,
+		})
+		const sub = createClassGroup({ classId: cls.id, name: "Sci", shortName: "SCI" })
+		const t1 = createTeacher({ name: "T1", shortName: "T1" })
+		const t2 = createTeacher({ name: "T2", shortName: "T2" })
+		const wholeActivity = createActivity({
+			name: "Math",
+			subjectName: "Math",
+			teacherIds: [t1.id],
+			classGroupIds: [whole.id],
+		})
+		const subActivity = createActivity({
+			name: "Bio",
+			subjectName: "Bio",
+			teacherIds: [t2.id],
+			classGroupIds: [sub.id],
+		})
+
+		const problem = prepareProblem(
+			calendar,
+			[wholeActivity, subActivity],
+			[t1, t2],
+			[whole, sub],
+			[],
+			[],
+		)
+		const result = generate(problem, undefined, undefined, { seed: 7 })
+
+		expect(result.placedCount).toBe(2)
+		const periods = result.assignments.map((a) => a.timeSlot.period).sort()
+		expect(periods).toEqual([0, 1])
+	})
 })

@@ -6,13 +6,14 @@ export const ClassGroupSchema = z.object({
 	name: z.string().min(1),
 	shortName: z.string().min(1).max(10),
 	studentCount: z.number().int().min(0).optional(),
+	isWholeClass: z.boolean().default(false),
 })
 
 export type ClassGroup = z.infer<typeof ClassGroupSchema>
 
 export function createClassGroup(
 	data: Pick<ClassGroup, "classId" | "name" | "shortName"> &
-		Partial<Pick<ClassGroup, "id" | "studentCount">>,
+		Partial<Pick<ClassGroup, "id" | "studentCount" | "isWholeClass">>,
 ): ClassGroup {
 	return ClassGroupSchema.parse({
 		id: data.id ?? crypto.randomUUID(),
@@ -20,5 +21,6 @@ export function createClassGroup(
 		name: data.name,
 		shortName: data.shortName,
 		studentCount: data.studentCount,
+		isWholeClass: data.isWholeClass ?? false,
 	})
 }
