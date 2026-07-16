@@ -26,6 +26,8 @@ const en: MessageCatalog = {
 		enabled: "Enabled",
 		disabled: "Disabled",
 		deleteConfirm: "Are you sure you want to delete this item?",
+		undo: "Undo",
+		redo: "Redo",
 	},
 	nav: {
 		dashboard: "Dashboard",

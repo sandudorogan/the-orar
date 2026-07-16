@@ -1,3 +1,10 @@
+import {
+	type UndoState,
+	emptyUndoState,
+	recordChange,
+	redoChange,
+	undoChange,
+} from "@/shared/history/undo-stack.ts"
 import { getAllProjects, saveProject } from "@/shared/storage/project-store.ts"
 import { getAssignments, saveAssignments } from "@/shared/storage/schedule-store.ts"
 import type {
@@ -83,6 +90,11 @@ interface ProjectContextValue {
 	deleteAvailabilityRule: (id: string) => void
 
 	replaceProject: (project: ScheduleProject, assignments?: Assignment[]) => void
+
+	undo: () => void
+	redo: () => void
+	canUndo: boolean
+	canRedo: boolean
 }
 
 const ProjectContext = createContext<ProjectContextValue | null>(null)
@@ -107,17 +119,34 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 	const [assignments, setAssignments] = useState<Assignment[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+	const projectRef = useRef<ScheduleProject | null>(null)
+	const [undoState, setUndoState] = useState<UndoState<ScheduleProject>>(emptyUndoState)
+	const undoStateRef = useRef(undoState)
+
+	const applyUndoState = useCallback((next: UndoState<ScheduleProject>) => {
+		undoStateRef.current = next
+		setUndoState(next)
+	}, [])
+
+	const scheduleSave = useCallback((next: ScheduleProject) => {
+		if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
+		saveTimeoutRef.current = setTimeout(() => {
+			saveProject(next)
+		}, 300)
+	}, [])
 
 	useEffect(() => {
 		void navigator.storage?.persist?.()
 		getAllProjects().then(async (projects) => {
 			const existing = projects[0]
 			if (existing) {
+				projectRef.current = existing
 				setProject(existing)
 				const stored = await getAssignments(existing.id)
 				if (stored.length > 0) setAssignments(stored)
 			} else {
 				const newProject = createDefaultProject()
+				projectRef.current = newProject
 				setProject(newProject)
 				saveProject(newProject)
 			}
@@ -125,17 +154,40 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 		})
 	}, [])
 
-	const updateProject = useCallback((updater: (prev: ScheduleProject) => ScheduleProject) => {
-		setProject((prev) => {
-			if (!prev) return prev
+	const updateProject = useCallback(
+		(updater: (prev: ScheduleProject) => ScheduleProject) => {
+			const prev = projectRef.current
+			if (!prev) return
 			const next = { ...updater(prev), updatedAt: new Date().toISOString() }
-			if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
-			saveTimeoutRef.current = setTimeout(() => {
-				saveProject(next)
-			}, 300)
-			return next
-		})
-	}, [])
+			applyUndoState(recordChange(undoStateRef.current, prev))
+			projectRef.current = next
+			setProject(next)
+			scheduleSave(next)
+		},
+		[applyUndoState, scheduleSave],
+	)
+
+	const undo = useCallback(() => {
+		const current = projectRef.current
+		if (!current) return
+		const result = undoChange(undoStateRef.current, current)
+		if (!result) return
+		applyUndoState(result.state)
+		projectRef.current = result.value
+		setProject(result.value)
+		scheduleSave(result.value)
+	}, [applyUndoState, scheduleSave])
+
+	const redo = useCallback(() => {
+		const current = projectRef.current
+		if (!current) return
+		const result = redoChange(undoStateRef.current, current)
+		if (!result) return
+		applyUndoState(result.state)
+		projectRef.current = result.value
+		setProject(result.value)
+		scheduleSave(result.value)
+	}, [applyUndoState, scheduleSave])
 
 	const addClass = useCallback(
 		(data: Pick<Class, "name" | "shortName"> & Partial<Pick<Class, "year" | "studentCount">>) => {
@@ -333,12 +385,14 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
 	const replaceProject = useCallback(
 		(newProject: ScheduleProject, nextAssignments?: Assignment[]) => {
+			projectRef.current = newProject
+			applyUndoState(emptyUndoState())
 			setProject(newProject)
 			setAssignments(nextAssignments ?? [])
 			saveProject(newProject)
 			saveAssignments(newProject.id, nextAssignments ?? [])
 		},
-		[],
+		[applyUndoState],
 	)
 
 	if (isLoading || !project) {
@@ -371,6 +425,10 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 				updateAvailabilityRule,
 				deleteAvailabilityRule,
 				replaceProject,
+				undo,
+				redo,
+				canUndo: undoState.past.length > 0,
+				canRedo: undoState.future.length > 0,
 			}}
 		>
 			{children}

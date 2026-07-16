@@ -26,6 +26,8 @@ const ru: MessageCatalog = {
 		enabled: "Включено",
 		disabled: "Отключено",
 		deleteConfirm: "Вы уверены, что хотите удалить этот элемент?",
+		undo: "Отменить",
+		redo: "Повторить",
 	},
 	nav: {
 		dashboard: "Панель",

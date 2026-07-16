@@ -1,4 +1,5 @@
 import { useLocale, useMessages } from "@/app/i18n/use-i18n.ts"
+import { useProject } from "@/app/project-context.tsx"
 import type { Locale } from "@orar/locales"
 import { getLocaleConfig, supportedLocales } from "@orar/locales"
 import { cn } from "@orar/ui"
@@ -12,11 +13,13 @@ import {
 	ListChecks,
 	PanelLeft,
 	PanelLeftClose,
+	Redo2,
 	Settings,
+	Undo2,
 	Zap,
 } from "lucide-react"
 import type { ReactNode } from "react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 interface NavItem {
 	path: string
@@ -38,6 +41,21 @@ export function AppLayout({ children }: { children: ReactNode }) {
 	const messages = useMessages()
 	const { locale, setLocale } = useLocale()
 	const matchRoute = useMatchRoute()
+	const { undo, redo, canUndo, canRedo } = useProject()
+
+	useEffect(() => {
+		function onKeyDown(e: KeyboardEvent) {
+			if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== "z") return
+			const target = e.target as HTMLElement
+			if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)
+				return
+			e.preventDefault()
+			if (e.shiftKey) redo()
+			else undo()
+		}
+		window.addEventListener("keydown", onKeyDown)
+		return () => window.removeEventListener("keydown", onKeyDown)
+	}, [undo, redo])
 
 	return (
 		<div className="flex h-screen overflow-hidden">
@@ -89,6 +107,30 @@ export function AppLayout({ children }: { children: ReactNode }) {
 				</ScrollArea>
 
 				<div className="border-t border-surface-sidebar-accent p-2">
+					<div
+						className={cn("flex items-center gap-1 pb-2", collapsed ? "justify-center" : "px-2")}
+					>
+						<button
+							type="button"
+							onClick={undo}
+							disabled={!canUndo}
+							title={messages.common.undo}
+							className="flex items-center justify-center rounded-[var(--sidebar-item-radius)] p-1.5 text-text-on-sidebar hover:bg-[var(--sidebar-item-hover)] disabled:opacity-40 transition-colors"
+						>
+							<Undo2 className="h-4 w-4" />
+						</button>
+						{!collapsed && (
+							<button
+								type="button"
+								onClick={redo}
+								disabled={!canRedo}
+								title={messages.common.redo}
+								className="flex items-center justify-center rounded-[var(--sidebar-item-radius)] p-1.5 text-text-on-sidebar hover:bg-[var(--sidebar-item-hover)] disabled:opacity-40 transition-colors"
+							>
+								<Redo2 className="h-4 w-4" />
+							</button>
+						)}
+					</div>
 					<div className={cn("flex items-center gap-2", collapsed ? "justify-center" : "px-2")}>
 						<Globe className="h-4 w-4 shrink-0" />
 						{!collapsed && (

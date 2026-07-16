@@ -29,6 +29,8 @@ describe("message-types", () => {
 				enabled: "Enabled",
 				disabled: "Disabled",
 				deleteConfirm: "Are you sure?",
+				undo: "Undo",
+				redo: "Redo",
 			},
 			nav: {
 				dashboard: "Dashboard",

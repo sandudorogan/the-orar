@@ -24,6 +24,8 @@ export interface MessageCatalog {
 		enabled: string
 		disabled: string
 		deleteConfirm: string
+		undo: string
+		redo: string
 	}
 	nav: {
 		dashboard: string

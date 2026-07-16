@@ -26,6 +26,8 @@ const ro: MessageCatalog = {
 		enabled: "Activat",
 		disabled: "Dezactivat",
 		deleteConfirm: "Ești sigur că vrei să ștergi acest element?",
+		undo: "Anulează",
+		redo: "Refă",
 	},
 	nav: {
 		dashboard: "Panou",

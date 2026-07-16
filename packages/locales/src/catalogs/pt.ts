@@ -26,6 +26,8 @@ const pt: MessageCatalog = {
 		enabled: "Ativado",
 		disabled: "Desativado",
 		deleteConfirm: "Tem certeza de que deseja excluir este item?",
+		undo: "Desfazer",
+		redo: "Refazer",
 	},
 	nav: {
 		dashboard: "Painel",
