@@ -6,21 +6,9 @@ import { ClassroomsPanel } from "@/features/classrooms/page.tsx"
 import { ConstraintsPanel } from "@/features/constraints/page.tsx"
 import { ImportPanel } from "@/features/import/import-panel.tsx"
 import { isProjectSetupEmpty, isProjectSetupReady } from "@/features/setup/project-setup.ts"
-import { SETUP_TABS, type SetupTab, parseSetupTab } from "@/features/setup/setup-tabs.ts"
+import type { SetupTab } from "@/features/setup/setup-tabs.ts"
 import { TeachersPanel } from "@/features/teachers/page.tsx"
-import {
-	Button,
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-	Tabs,
-	TabsContent,
-	TabsList,
-	TabsTrigger,
-	cn,
-} from "@orar/ui"
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, cn } from "@orar/ui"
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import {
 	BookOpen,
@@ -53,7 +41,6 @@ export function SetupPage() {
 	const isEmpty = isProjectSetupEmpty(project)
 	const setupReady = isProjectSetupReady(project)
 	const hasClassGroups = project.classGroups.length > 0
-	const showManualTabs = !isEmpty || manual
 	const activeTab = isEmpty && !manual ? "import" : tab
 
 	const steps: StepConfig[] = [
@@ -106,6 +93,10 @@ export function SetupPage() {
 	const manualSteps = steps.filter((step) => step.tab !== "import")
 	const requiredSteps = manualSteps.filter((step) => !step.optional)
 	const requiredComplete = requiredSteps.every((step) => step.complete)
+	const requiredDone = requiredSteps.filter((step) => step.complete).length
+
+	const showOnboardingOnly = isEmpty && !manual
+	const activeStep = steps.find((step) => step.tab === activeTab)
 
 	function selectTab(nextTab: SetupTab) {
 		const enteringManual = isEmpty && nextTab !== "import"
@@ -128,6 +119,23 @@ export function SetupPage() {
 		}
 	}, [isEmpty, manual, tab, navigate])
 
+	function renderActivePanel() {
+		switch (activeTab) {
+			case "import":
+				return <ImportPanel embedded onStartManual={startManual} />
+			case "classes":
+				return <ClassesPanel embedded />
+			case "teachers":
+				return <TeachersPanel embedded />
+			case "classrooms":
+				return <ClassroomsPanel embedded />
+			case "activities":
+				return <ActivitiesPanel embedded />
+			case "constraints":
+				return <ConstraintsPanel embedded />
+		}
+	}
+
 	return (
 		<div className="space-y-6">
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -139,108 +147,94 @@ export function SetupPage() {
 						{isEmpty ? messages.setup.emptyDescription : messages.setup.description}
 					</p>
 				</div>
-				{!isEmpty && (
-					<Button
-						variant={setupReady ? "default" : "outline"}
-						onClick={() => navigate({ to: "/generate" })}
-						disabled={!setupReady}
-					>
-						<Zap className="h-4 w-4" />
-						{messages.setup.generateCta}
-					</Button>
+				{!showOnboardingOnly && (
+					<div className="flex flex-wrap items-center gap-2">
+						<Button variant="outline" onClick={() => selectTab("import")}>
+							<FileUp className="h-4 w-4" />
+							{messages.nav.import}
+						</Button>
+						{!isEmpty && (
+							<Button
+								variant={setupReady ? "default" : "outline"}
+								onClick={() => navigate({ to: "/generate" })}
+								disabled={!setupReady}
+							>
+								<Zap className="h-4 w-4" />
+								{messages.setup.generateCta}
+							</Button>
+						)}
+					</div>
 				)}
 			</div>
 
-			{!isEmpty && (
-				<Card>
-					<CardHeader className="pb-3">
-						<CardTitle className="text-base">{messages.setup.progressTitle}</CardTitle>
-						<CardDescription>
-							{requiredComplete
-								? messages.setup.readyDescription
-								: messages.setup.progressDescription}
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-							{manualSteps.map((step) => (
-								<button
-									key={step.tab}
-									type="button"
-									onClick={() => selectTab(step.tab)}
-									className={cn(
-										"flex items-center gap-3 rounded-lg border p-3 text-left transition-colors",
-										activeTab === step.tab
-											? "border-action-primary bg-action-primary/5"
-											: "border-border-subtle hover:border-border-default hover:bg-surface-subtle",
-									)}
-								>
-									{step.complete ? (
-										<CheckCircle2 className="h-5 w-5 shrink-0 text-status-generated" />
-									) : (
-										<Circle className="h-5 w-5 shrink-0 text-text-muted" />
-									)}
-									<div className="min-w-0 flex-1">
-										<div className="flex items-center gap-2">
-											{step.icon}
-											<span className="truncate text-sm font-medium text-text-primary">
-												{step.label}
-											</span>
+			{showOnboardingOnly ? (
+				<ImportPanel embedded onStartManual={startManual} />
+			) : (
+				<>
+					<Card>
+						<CardHeader className="pb-3">
+							<div className="flex items-center justify-between gap-3">
+								<CardTitle className="text-base">{messages.setup.progressTitle}</CardTitle>
+								<span className="shrink-0 rounded-full bg-surface-subtle px-2.5 py-0.5 text-xs font-semibold text-text-secondary">
+									{requiredDone} / {requiredSteps.length}
+								</span>
+							</div>
+							<CardDescription>
+								{requiredComplete
+									? messages.setup.readyDescription
+									: messages.setup.progressDescription}
+							</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+								{manualSteps.map((step) => (
+									<button
+										key={step.tab}
+										type="button"
+										onClick={() => selectTab(step.tab)}
+										className={cn(
+											"flex items-center gap-3 rounded-lg border p-3 text-left transition-colors",
+											activeTab === step.tab
+												? "border-action-primary bg-action-primary/5"
+												: "border-border-subtle hover:border-border-default hover:bg-surface-subtle",
+										)}
+									>
+										{step.complete ? (
+											<CheckCircle2 className="h-5 w-5 shrink-0 text-status-generated" />
+										) : (
+											<Circle className="h-5 w-5 shrink-0 text-text-muted" />
+										)}
+										<div className="min-w-0 flex-1">
+											<div className="flex items-center gap-2">
+												{step.icon}
+												<span className="truncate text-sm font-medium text-text-primary">
+													{step.label}
+												</span>
+											</div>
+											<p className="mt-0.5 text-xs text-text-secondary">
+												{step.optional
+													? messages.setup.optionalStep
+													: step.complete
+														? messages.setup.stepComplete
+														: messages.setup.stepIncomplete}
+												{step.count > 0 && ` · ${step.count}`}
+											</p>
 										</div>
-										<p className="mt-0.5 text-xs text-text-secondary">
-											{step.optional
-												? messages.setup.optionalStep
-												: step.complete
-													? messages.setup.stepComplete
-													: messages.setup.stepIncomplete}
-											{step.count > 0 && ` · ${step.count}`}
-										</p>
-									</div>
-								</button>
-							))}
+									</button>
+								))}
+							</div>
+						</CardContent>
+					</Card>
+
+					<div className="space-y-4">
+						<div className="flex items-center gap-2 text-text-primary">
+							{activeStep?.icon}
+							<h2 className="text-lg font-semibold">{activeStep?.label}</h2>
 						</div>
-					</CardContent>
-				</Card>
+						{renderActivePanel()}
+					</div>
+				</>
 			)}
-
-			<Tabs value={activeTab} onValueChange={(value) => selectTab(parseSetupTab(value))}>
-				{showManualTabs && (
-					<TabsList className="flex h-auto w-full flex-wrap justify-start gap-1">
-						{SETUP_TABS.map((setupTab) => {
-							const step = steps.find((s) => s.tab === setupTab)
-							return (
-								<TabsTrigger key={setupTab} value={setupTab} className="gap-1.5">
-									{step?.icon}
-									{step?.label}
-								</TabsTrigger>
-							)
-						})}
-					</TabsList>
-				)}
-
-				<TabsContent value="import" className={showManualTabs ? "mt-6" : undefined}>
-					<ImportPanel embedded onStartManual={startManual} />
-				</TabsContent>
-				{showManualTabs && (
-					<>
-						<TabsContent value="classes" className="mt-6">
-							<ClassesPanel embedded />
-						</TabsContent>
-						<TabsContent value="teachers" className="mt-6">
-							<TeachersPanel embedded />
-						</TabsContent>
-						<TabsContent value="classrooms" className="mt-6">
-							<ClassroomsPanel embedded />
-						</TabsContent>
-						<TabsContent value="activities" className="mt-6">
-							<ActivitiesPanel embedded />
-						</TabsContent>
-						<TabsContent value="constraints" className="mt-6">
-							<ConstraintsPanel embedded />
-						</TabsContent>
-					</>
-				)}
-			</Tabs>
 		</div>
 	)
 }
