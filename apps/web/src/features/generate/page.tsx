@@ -16,6 +16,7 @@ import {
 	Input,
 	cn,
 } from "@orar/ui"
+import { useNavigate } from "@tanstack/react-router"
 import {
 	AlertTriangle,
 	CheckCircle,
@@ -58,6 +59,7 @@ const initialState: GenerationState = {
 export function GeneratePage() {
 	const messages = useMessages()
 	const { project, assignments, setAssignments: setGlobalAssignments } = useProject()
+	const navigate = useNavigate()
 	const clientRef = useRef<GenerationClient | null>(null)
 
 	const [state, setState] = useState<GenerationState>(initialState)
@@ -103,6 +105,7 @@ export function GeneratePage() {
 						conflicts,
 						unplacedActivityIds: response.unplacedActivityIds,
 					}))
+					navigate({ to: "/timetables" })
 					break
 				}
 				case "failed":
@@ -120,7 +123,7 @@ export function GeneratePage() {
 					break
 			}
 		},
-		[project, setGlobalAssignments],
+		[project, setGlobalAssignments, navigate],
 	)
 
 	function handleStart() {
